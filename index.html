@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PHARMA PRO">
+<meta name="theme-color" content="#0A1628">
+<title>PHARMA PRO</title>
+<link rel="manifest" href="data:application/json,{%22name%22:%22PHARMA PRO%22,%22short_name%22:%22PharmaPRO%22,%22display%22:%22standalone%22,%22background_color%22:%22%230A1628%22,%22theme_color%22:%22%230A1628%22}">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0A1628;--navy2:#132040;--gold:#E8A020;--gold2:#F5C842;
+  --green:#0F9E6E;--red:#E84545;--blue:#1E6FD4;--purple:#7C3AED;
+  --orange:#E8601A;--teal:#0891B2;
+  --bg:#F0EEE9;--card:#FFFFFF;--text:#1A1A2E;--muted:#6B7280;
+  --border:rgba(10,22,40,0.1);--pill:20px;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+#app{max-width:480px;margin:0 auto;height:100vh;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+
+/* HEADER */
+.hdr{background:var(--navy);padding:env(safe-area-inset-top,12px) 14px 0;padding-top:max(env(safe-area-inset-top),12px);flex-shrink:0}
+.htop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.logo{display:flex;align-items:center;gap:8px}
+.lm{width:34px;height:34px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--navy);flex-shrink:0}
+.ltxt h1{color:#fff;font-size:16px;font-weight:900;letter-spacing:-.5px}
+.ltxt p{color:rgba(255,255,255,.4);font-size:9.5px}
+.dbadge{background:rgba(232,160,32,.15);border:1px solid rgba(232,160,32,.3);color:var(--gold2);font-size:10px;padding:3px 9px;border-radius:var(--pill);white-space:nowrap}
+
+/* NAV */
+.nav{display:flex;overflow-x:auto;scrollbar-width:none;gap:0;padding-bottom:1px}
+.nav::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;background:transparent;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.38);font-size:9px;padding:6px 9px 8px;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap}
+.ntab .ic{font-size:14px}
+.ntab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.ntab:active{opacity:.7}
+
+/* SCROLL CONTENT */
+.content-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pg{display:none;padding:12px 12px 100px}
+.pg.on{display:block}
+
+/* CARD */
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:13px;margin-bottom:10px}
+.chd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+
+/* BADGE */
+.bdg{font-size:9px;padding:2px 7px;border-radius:var(--pill);font-weight:700;display:inline-block;white-space:nowrap}
+.b-red{background:#FFF0ED;color:var(--red);border:1px solid #F5C0B0}
+.b-gold{background:#FFF8E6;color:#B07800;border:1px solid #F5D87A}
+.b-blue{background:#EBF5FF;color:var(--blue);border:1px solid #B0D0F0}
+.b-green{background:#EDFBF5;color:var(--green);border:1px solid #9EEBD0}
+.b-purple{background:#F5EDFF;color:var(--purple);border:1px solid #D4B0FF}
+.b-teal{background:#E0F7FA;color:var(--teal);border:1px solid #A0DCE8}
+.b-navy{background:var(--navy);color:var(--gold);border:none}
+.type-hosp{background:#EBF5FF;color:var(--blue);border:1px solid #B0D0F0;font-size:9px;padding:2px 6px;border-radius:var(--pill);font-weight:700}
+.type-clinic{background:#EDFBF5;color:var(--green);border:1px solid #9EEBD0;font-size:9px;padding:2px 6px;border-radius:var(--pill);font-weight:700}
+.type-pharm{background:#FFF8E6;color:#B07800;border:1px solid #F5D87A;font-size:9px;padding:2px 6px;border-radius:var(--pill);font-weight:700}
+.type-whole{background:#F5EDFF;color:var(--purple);border:1px solid #D4B0FF;font-size:9px;padding:2px 6px;border-radius:var(--pill);font-weight:700}
+.s-hot{background:#FFF0ED;color:var(--red);border:1px solid #F5C0B0}
+.s-warm{background:#FFF8E6;color:#B07800;border:1px solid #F5D87A}
+.s-cold{background:#EBF5FF;color:var(--blue);border:1px solid #B0D0F0}
+.s-done{background:#EDFBF5;color:var(--green);border:1px solid #9EEBD0}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.sg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.sbox{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:center}
+.sv{font-size:22px;font-weight:900;color:var(--navy);line-height:1}
+.sv2{font-size:16px;font-weight:900;line-height:1}
+.sl{font-size:10px;color:var(--muted);margin-top:2px}
+.sc{font-size:10px;margin-top:2px}.up{color:var(--green)}.dn{color:var(--red)}
+
+/* PROGRESS */
+.pr{margin-bottom:7px}
+.prt{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px}
+.prb{height:6px;background:#EEECEA;border-radius:10px;overflow:hidden}
+.prf{height:100%;border-radius:10px}
+
+/* QUOTE */
+.qhero{background:linear-gradient(135deg,var(--navy) 0%,#1A2F5A 100%);border-radius:14px;padding:15px;margin-bottom:10px;position:relative;overflow:hidden}
+.qhero::before{content:'"';position:absolute;top:-8px;left:8px;font-size:70px;color:rgba(232,160,32,.12);line-height:1;font-family:serif;pointer-events:none}
+.qt{color:rgba(255,255,255,.93);font-size:12.5px;line-height:1.65;position:relative}
+.qa{color:var(--gold);font-size:10px;margin-top:6px;position:relative}
+
+/* SEARCH */
+.sw{position:relative;margin-bottom:10px}
+.si{width:100%;padding:11px 13px 11px 36px;border:1.5px solid var(--border);border-radius:11px;font-size:14px;background:var(--card);outline:none;color:var(--text);font-family:inherit;-webkit-appearance:none}
+.si:focus{border-color:var(--navy)}
+.sic{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
+
+/* FILTER BTNS */
+.fbr{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.fb{padding:6px 12px;border-radius:var(--pill);border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted);white-space:nowrap;-webkit-appearance:none}
+.fb.on{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+.fb:active{opacity:.7}
+
+/* LIST ITEMS */
+.ci{display:flex;align-items:flex-start;gap:10px;padding:13px 12px;background:var(--card);border-radius:12px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;-webkit-appearance:none}
+.ci:active{background:#F5F4F0}
+.av{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.avr{border-radius:50%}
+.cif{flex:1;min-width:0}
+.cn{font-size:14px;font-weight:700}
+.cc{font-size:11.5px;color:var(--muted);margin-top:2px}
+.cm{font-size:11.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* TASKS */
+.tsec{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:12px 0 7px}
+.ti{display:flex;align-items:flex-start;gap:10px;padding:12px 11px;background:var(--card);border-radius:11px;border:1px solid var(--border);margin-bottom:7px}
+.ti:active{background:#F5F4F0}
+.ti.dn{opacity:.55}
+.tck{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer}
+.tck.on{background:var(--green);border-color:var(--green);color:#fff}
+.ttl{font-size:13px;font-weight:500;line-height:1.4}
+.ti.dn .ttl{text-decoration:line-through;color:var(--muted)}
+.tm{font-size:11px;color:var(--muted);margin-top:2px}
+.pd{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.ph{background:var(--red)}.pm{background:var(--gold)}.pl{background:var(--green)}
+.ir{display:flex;gap:7px;margin-bottom:10px}
+.ii{flex:1;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;background:var(--card);outline:none;color:var(--text);font-family:inherit;-webkit-appearance:none}
+.ii:focus{border-color:var(--navy)}
+.ab{background:var(--navy);color:var(--gold);border:none;border-radius:10px;padding:11px 16px;font-size:16px;cursor:pointer;flex-shrink:0}
+.ab:active{opacity:.7}
+
+/* PERF */
+.bgrp{display:flex;align-items:flex-end;gap:3px;height:100px;padding-bottom:16px}
+.bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:3px}
+.bl{font-size:9px;color:var(--muted)}.bv{font-size:9px;font-weight:700;color:var(--navy)}
+
+/* DRUG */
+.dcard{background:var(--card);border-radius:13px;border:1px solid var(--border);overflow:hidden;margin-bottom:9px}
+.dhead{padding:13px;background:linear-gradient(135deg,var(--navy) 0%,#1A2F5A 100%)}
+.dname{color:#fff;font-size:14px;font-weight:900}
+.dgen{color:rgba(255,255,255,.5);font-size:10.5px;margin-top:2px}
+.dtags{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+.dtag{font-size:9px;padding:2px 6px;border-radius:var(--pill);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
+.dbody{padding:12px}
+.drow{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px}
+.drow:last-child{border-bottom:none}
+.dlbl{color:var(--muted);flex-shrink:0;width:78px;font-size:11px}
+.dval{font-weight:600;color:var(--navy);text-align:right;flex:1;font-size:12px}
+.dval.red{color:var(--red)}.dval.green{color:var(--green)}.dval.blue{color:var(--blue)}
+.ctbl{width:100%;border-collapse:collapse;font-size:11px}
+.ctbl th{padding:8px;background:var(--navy);color:rgba(255,255,255,.65);font-weight:600;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.4px}
+.ctbl th:first-child{border-radius:8px 0 0 0}.ctbl th:last-child{border-radius:0 8px 0 0}
+.ctbl td{padding:9px 8px;border-bottom:1px solid var(--border);font-size:11px}
+.ctbl tr:last-child td{border-bottom:none}
+.dhi{color:var(--red);font-weight:700}.dmd{color:var(--orange);font-weight:700}.dlo{color:var(--green);font-weight:700}
+
+/* NEWS */
+.ni{display:flex;gap:9px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.ni:last-child{border-bottom:none}
+.ntitle{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:2px}
+.ndate{font-size:10.5px;color:var(--muted)}
+
+/* PUBMED */
+.pub{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:13px;margin-bottom:9px}
+.pub-t{font-size:12.5px;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:6px}
+.pub-m{font-size:10.5px;color:var(--muted);display:flex;gap:7px;flex-wrap:wrap}
+.pub-id{color:var(--blue);font-weight:700;cursor:pointer;text-decoration:underline}
+.pub-a{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:7px;border-top:1px solid var(--border);padding-top:7px}
+.pub-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}
+.ptag{font-size:9px;background:#EBF5FF;color:var(--blue);border:1px solid #B0D0F0;padding:2px 6px;border-radius:var(--pill)}
+
+/* TERM */
+.term-item{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:13px 12px;margin-bottom:7px;cursor:pointer}
+.term-item:active{background:#F5F4F0}
+.term-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.term-abbr{font-size:15px;font-weight:900;color:var(--navy)}
+.term-full{font-size:11px;color:var(--blue);font-weight:600;margin-top:2px}
+.term-ko{font-size:12.5px;color:var(--text);margin-top:5px}
+.term-body{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:6px;border-top:1px solid var(--border);padding-top:6px;display:none}
+.term-item.open .term-body{display:block}
+
+/* SOCIETY */
+.soc-item{background:var(--card);border-radius:13px;border:1px solid var(--border);margin-bottom:9px;overflow:hidden}
+.soc-head{padding:13px;display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.soc-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.soc-body{padding:0 13px 13px;display:none}
+.soc-item.open .soc-body{display:block}
+.conf-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px}
+.conf-item:last-child{border-bottom:none}
+
+/* GROWTH */
+.tip{background:var(--card);border-radius:12px;border-left:4px solid var(--gold);padding:12px 13px;margin-bottom:8px}
+.tcat{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px}
+.ttitle{font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.tbody{font-size:12px;color:var(--muted);line-height:1.6}
+.rout{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:11px;border:1px solid var(--border);margin-bottom:6px}
+.rtm{font-size:11px;font-weight:700;color:var(--navy);min-width:42px}
+.rtxt{font-size:12.5px;flex:1}
+
+/* SCHEDULE */
+.sch-grid{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.sch-grid th{padding:7px 4px;background:var(--navy);color:rgba(255,255,255,.7);font-weight:600;font-size:9px;text-align:center}
+.sch-grid th:first-child{width:68px;border-radius:8px 0 0 0}.sch-grid th:last-child{border-radius:0 8px 0 0}
+.sch-grid td{padding:6px 3px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);text-align:center;font-size:10px;vertical-align:middle}
+.sch-grid td:first-child{font-weight:700;color:var(--navy);background:#FAF9F7;font-size:10px;text-align:left;padding-left:8px;border-right:2px solid var(--border)}
+.sch-grid tr:last-child td{border-bottom:none}
+.cell-avail{background:#EDFBF5;color:var(--green);font-weight:700;font-size:9px;border-radius:4px;padding:2px 3px;display:inline-block}
+.cell-busy{background:#FFF0ED;color:var(--red);font-weight:700;font-size:9px;border-radius:4px;padding:2px 3px;display:inline-block}
+.cell-partial{background:#FFF8E6;color:#B07800;font-weight:700;font-size:9px;border-radius:4px;padding:2px 3px;display:inline-block}
+.cell-none{color:#D1CFC9;font-size:12px}
+.step-lane{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.step-lane:last-child{border-bottom:none}
+.step-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.step-times{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.step-slot{font-size:10px;padding:3px 8px;border-radius:var(--pill);font-weight:600;border:1px solid}
+.slot-am{background:#EBF5FF;color:var(--blue);border-color:#B0D0F0}
+.slot-pm{background:#FFF8E6;color:#B07800;border-color:#F5D87A}
+.slot-off{background:#F5F4F0;color:var(--muted);border-color:var(--border)}
+.day-tabs{display:flex;gap:4px;margin-bottom:12px}
+.day-tab{flex:1;padding:8px 2px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted);text-align:center;line-height:1.3}
+.day-tab.on{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+.day-tab.today{border-color:var(--gold)}
+.dropzone{border:2px dashed var(--border);border-radius:13px;padding:24px 16px;text-align:center;cursor:pointer;margin-bottom:10px;position:relative;background:var(--card)}
+.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
+/* CLINIC CALENDAR */
+.week-grid{width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed}
+.week-grid th{padding:6px 2px;background:var(--navy);color:rgba(255,255,255,.7);font-weight:600;font-size:9px;text-align:center}
+.week-grid th:first-child{width:50px;border-radius:8px 0 0 0}.week-grid th:last-child{border-radius:0 8px 0 0}
+.week-grid td{padding:3px 2px;border:1px solid var(--border);text-align:center;vertical-align:middle;height:30px;cursor:pointer}
+.week-grid td:first-child{background:#FAF9F7;font-size:10px;font-weight:700;color:var(--navy);cursor:default;text-align:left;padding-left:5px}
+.wslot{font-size:8.5px;padding:1px 3px;border-radius:3px;font-weight:700;display:block;margin:1px auto;max-width:95%}
+.wslot-avail{background:#EDFBF5;color:var(--green)}
+.wslot-best{background:#FFF8E6;color:#B07800}
+.clinic-time-item{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:13px;margin-bottom:9px}
+.cti-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.cti-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.time-slots-row{display:flex;gap:5px;flex-wrap:wrap}
+.tslot{font-size:10px;padding:5px 8px;border-radius:8px;font-weight:600;cursor:pointer;border:1px solid;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:55px}
+.tslot:active{opacity:.7}
+.ts-time{font-size:9.5px;font-weight:700}
+.ts-label{font-size:8.5px}
+.ts-green{background:#EDFBF5;color:var(--green);border-color:#9EEBD0}
+.ts-gold{background:#FFF8E6;color:#B07800;border-color:#F5D87A}
+.ts-gray{background:#F5F4F0;color:var(--muted);border-color:var(--border)}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-nav{background:transparent;border:1.5px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--navy)}
+.cal-nav:active{background:var(--bg)}
+.cal-title{font-size:14px;font-weight:700;color:var(--navy)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* BUTTONS */
+.btn-navy{background:var(--navy);color:var(--gold);border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-bottom:9px}
+.btn-navy:active{opacity:.8}
+.btn-out{background:transparent;color:var(--navy);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.btn-out:active{background:var(--bg)}
+.btn-ico{background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:8px 11px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--text);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-ico:active{opacity:.7}
+
+/* MODAL */
+.mbk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end;justify-content:center}
+.mbk.on{display:flex}
+.modal{background:var(--card);border-radius:20px 20px 0 0;padding:20px 18px;padding-bottom:max(env(safe-area-inset-bottom),20px);width:100%;max-width:480px;animation:sup .25s ease;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+@keyframes sup{from{transform:translateY(40px);opacity:0}}
+.mttl{font-size:16px;font-weight:900;color:var(--navy);margin-bottom:14px}
+.fl{margin-bottom:10px}
+.flbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;display:block}
+.finp,.fsel,.ftxt{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;background:var(--bg);outline:none;color:var(--text);font-family:inherit;-webkit-appearance:none}
+.fsel{cursor:pointer}
+.ftxt{min-height:65px;resize:vertical}
+.finp:focus,.fsel:focus,.ftxt:focus{border-color:var(--navy)}
+.frow{display:flex;gap:8px}
+.frow .fl{flex:1}
+.mbtns{display:flex;gap:8px;margin-top:14px}
+.bcnl{flex:1;padding:13px;border:1.5px solid var(--border);border-radius:11px;background:var(--bg);color:var(--muted);font-size:14px;cursor:pointer;font-family:inherit}
+.bsav{flex:2;padding:13px;border:none;border-radius:11px;background:var(--navy);color:var(--gold);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.bsav:active,.bcnl:active{opacity:.7}
+
+/* ALERT */
+.alert{border-radius:11px;padding:11px 13px;margin-bottom:8px;border-left:4px solid}
+.alert-r{background:#FFF5F5;border-left-color:var(--red)}
+.alert-y{background:#FFF9F0;border-left-color:var(--gold)}
+.alert-g{background:#F0FBF7;border-left-color:var(--green)}
+.alert-b{background:#EBF5FF;border-left-color:var(--blue)}
+.alert-title{font-size:12.5px;font-weight:700;margin-bottom:2px}
+.alert-body{font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* RING */
+.rw{display:flex;justify-content:center;align-items:center;position:relative;height:120px;margin:6px 0}
+.ri{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* VOICE */
+.voice-btn{width:100%;padding:13px;border:2px dashed var(--border);border-radius:12px;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.voice-btn.rec{border-color:var(--red);color:var(--red);background:#FFF5F5}
+.hosp-sel-wrap{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.hosp-sel{flex:1;padding:10px 11px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;background:var(--card);color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none;cursor:pointer}
+.hosp-sel:focus{border-color:var(--navy)}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="hdr">
+  <div class="htop">
+    <div class="logo">
+      <div class="lm">Rx</div>
+      <div class="ltxt"><h1>PHARMA PRO</h1><p>제약 영업 마스터 플랫폼</p></div>
+    </div>
+    <div class="dbadge" id="hd">로딩중</div>
+  </div>
+  <div class="nav">
+    <button class="ntab on" onclick="go('dash')" id="nt-dash"><span class="ic">📊</span>대시보드</button>
+    <button class="ntab" onclick="go('cust')" id="nt-cust"><span class="ic">🏥</span>거래처</button>
+    <button class="ntab" onclick="go('hsch')" id="nt-hsch"><span class="ic">🗓</span>병원스케줄</button>
+    <button class="ntab" onclick="go('ccal')" id="nt-ccal"><span class="ic">⏰</span>의원면담</button>
+    <button class="ntab" onclick="go('pharm')" id="nt-pharm"><span class="ic">💊</span>문전약국</button>
+    <button class="ntab" onclick="go('whole')" id="nt-whole"><span class="ic">🏭</span>도매상</button>
+    <button class="ntab" onclick="go('tasks')" id="nt-tasks"><span class="ic">✅</span>할일</button>
+    <button class="ntab" onclick="go('perf')" id="nt-perf"><span class="ic">📈</span>실적</button>
+    <button class="ntab" onclick="go('drug')" id="nt-drug"><span class="ic">💉</span>약물DB</button>
+    <button class="ntab" onclick="go('news')" id="nt-news"><span class="ic">📰</span>뉴스</button>
+    <button class="ntab" onclick="go('pub')" id="nt-pub"><span class="ic">🔬</span>논문</button>
+    <button class="ntab" onclick="go('term')" id="nt-term"><span class="ic">📖</span>용어</button>
+    <button class="ntab" onclick="go('soc')" id="nt-soc"><span class="ic">🏛</span>학회</button>
+    <button class="ntab" onclick="go('growth')" id="nt-growth"><span class="ic">🌱</span>성장</button>
+  </div>
+</div>
+
+<div class="content-area">
+
+<!-- DASHBOARD -->
+<div id="pg-dash" class="pg on">
+  <div class="qhero"><div class="qt" id="dq"></div><div class="qa">— 오늘의 제약 영업 명언</div></div>
+  <div class="sg4">
+    <div class="sbox"><div class="sv2" style="color:var(--blue)">4</div><div class="sl">병원</div></div>
+    <div class="sbox"><div class="sv2" style="color:var(--green)">5</div><div class="sl">의원</div></div>
+    <div class="sbox"><div class="sv2" style="color:var(--gold)">3</div><div class="sl">약국</div></div>
+    <div class="sbox"><div class="sv2" style="color:var(--purple)">2</div><div class="sl">도매</div></div>
+  </div>
+  <div class="sg">
+    <div class="sbox"><div class="sv">₩3.2M</div><div class="sl">이달 실적</div><div class="sc dn">목표比 74%</div></div>
+    <div class="sbox"><div class="sv">14</div><div class="sl">총 방문</div><div class="sc up">↑3 어제比</div></div>
+  </div>
+  <div class="card">
+    <div class="chd">오늘 목표</div>
+    <div class="rw">
+      <svg width="120" height="120" style="transform:rotate(-90deg)" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="48" fill="none" stroke="#EEECEA" stroke-width="10"/>
+        <circle cx="60" cy="60" r="48" fill="none" stroke="url(#rg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="302" stroke-dashoffset="91"/>
+        <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#E8A020"/><stop offset="100%" stop-color="#0F9E6E"/></linearGradient></defs>
+      </svg>
+      <div class="ri"><span style="font-size:24px;font-weight:900;color:var(--navy)">70%</span><span style="font-size:10px;color:var(--muted)">달성</span></div>
+    </div>
+    <div class="pr"><div class="prt"><span>병원·의원 방문</span><span>9/12</span></div><div class="prb"><div class="prf" style="width:75%;background:var(--gold)"></div></div></div>
+    <div class="pr"><div class="prt"><span>문전약국 확인</span><span>4/6</span></div><div class="prb"><div class="prf" style="width:66%;background:var(--green)"></div></div></div>
+    <div class="pr"><div class="prt"><span>도매 재고 확인</span><span>1/2</span></div><div class="prb"><div class="prf" style="width:50%;background:var(--purple)"></div></div></div>
+  </div>
+  <div class="alert alert-r"><div class="alert-title">⚠️ 메트포르민 급여기준 변경 (2025.12.15 시행)</div><div class="alert-body">당뇨 계열 방문 시 반드시 확인 요망</div></div>
+  <div class="alert alert-y"><div class="alert-title">💡 로수바스타틴 CSO 할인율 업데이트</div><div class="alert-body">약물DB 탭 → CSO 현황 확인</div></div>
+  <div class="alert alert-g"><div class="alert-title">🏛 대한당뇨병학회 춘계 D-34 (2026.04.18)</div><div class="alert-body">초록 제출 마감 임박</div></div>
+  <div class="alert alert-b"><div class="alert-title">🏭 한국메디팜 로수바스타틴 재고 부족</div><div class="alert-body">도매탭에서 긴급 확인 필요</div></div>
+  <div class="card"><div class="chd">오늘 주요 일정</div><div id="sched"></div></div>
+</div>
+
+<!-- CUSTOMERS -->
+<div id="pg-cust" class="pg">
+  <div style="display:flex;gap:7px;margin-bottom:10px">
+    <button class="btn-navy" style="margin-bottom:0;flex:1;padding:13px" onclick="openM('cm')">+ 거래처 등록</button>
+    <button class="btn-ico" onclick="alert('명함 스캔\n실제 앱에서 카메라 OCR 연동')">📷</button>
+    <button class="btn-ico" onclick="showMap()">🗺</button>
+  </div>
+  <div class="sw"><span class="sic">🔍</span><input class="si" id="csrch" placeholder="병원명, 의사명, 과목 검색..." oninput="renderCust()"></div>
+  <div class="fbr" id="ctype-fb">
+    <button class="fb on" onclick="setF('ctype','all',this,'ctype-fb');renderCust()">전체</button>
+    <button class="fb" onclick="setF('ctype','hosp',this,'ctype-fb');renderCust()">🏥 병원</button>
+    <button class="fb" onclick="setF('ctype','clinic',this,'ctype-fb');renderCust()">🏨 의원</button>
+  </div>
+  <div class="fbr" id="cstat-fb">
+    <button class="fb on" onclick="setF('cstat','all',this,'cstat-fb');renderCust()">전체</button>
+    <button class="fb" onclick="setF('cstat','hot',this,'cstat-fb');renderCust()">🔥 HOT</button>
+    <button class="fb" onclick="setF('cstat','warm',this,'cstat-fb');renderCust()">🟡 WARM</button>
+    <button class="fb" onclick="setF('cstat','cold',this,'cstat-fb');renderCust()">🔵 COLD</button>
+    <button class="fb" onclick="setF('cstat','done',this,'cstat-fb');renderCust()">✅ 완료</button>
+  </div>
+  <div id="clist"></div>
+</div>
+
+<!-- HOSPITAL SCHEDULE -->
+<div id="pg-hsch" class="pg">
+  <div class="card" style="background:linear-gradient(135deg,var(--navy),#1A2F5A);border:none;margin-bottom:10px">
+    <div style="color:var(--gold);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">병원 스텝별 진료시간표</div>
+    <div style="color:rgba(255,255,255,.8);font-size:12.5px;line-height:1.6">CSV 파일 업로드 또는 직접 입력으로 스텝별 진료시간을 한눈에 확인하세요.</div>
+  </div>
+  <div class="hosp-sel-wrap">
+    <select class="hosp-sel" id="hsch-sel" onchange="renderHospSch()"><option value="">-- 병원 선택 --</option></select>
+    <button class="btn-ico" onclick="openM('hschm')">+ 추가</button>
+  </div>
+  <div class="dropzone" id="dropzone">
+    <input type="file" accept=".csv,.tsv,.txt" onchange="onFileSelect(event)">
+    <div style="font-size:26px;margin-bottom:8px">📂</div>
+    <div style="font-size:13.5px;font-weight:700;color:var(--navy);margin-bottom:4px">CSV 파일 업로드</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.5">형식: 스텝명,부서,월AM,월PM,화AM,화PM,수AM,수PM,목AM,목PM,금AM,금PM,토AM,토PM</div>
+  </div>
+  <div id="hsch-content" style="display:none">
+    <div class="day-tabs" id="day-tabs"></div>
+    <div class="card" style="padding:10px;overflow-x:auto">
+      <div class="chd" id="hsch-title">주간 시간표</div>
+      <table class="sch-grid" id="sch-table"></table>
+    </div>
+    <div class="card"><div class="chd">스텝별 진료 가능 시간</div><div id="step-detail"></div></div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#EDFBF5;border:1px solid #9EEBD0"></div>진료가능</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#FFF8E6;border:1px solid #F5D87A"></div>부분진료</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#FFF0ED;border:1px solid #F5C0B0"></div>없음</div>
+    </div>
+  </div>
+  <div class="card" id="hsch-empty">
+    <div class="chd">샘플 데이터</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px;line-height:1.6">병원 선택 또는 파일 업로드 후 시간표가 표시됩니다.</div>
+    <button class="btn-navy" onclick="loadSampleHosp()">📋 샘플 시간표 불러오기</button>
+  </div>
+</div>
+
+<!-- CLINIC CALENDAR -->
+<div id="pg-ccal" class="pg">
+  <div class="card" style="background:linear-gradient(135deg,#0F6E56,#0A1628);border:none;margin-bottom:10px">
+    <div style="color:var(--gold2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">의원별 면담 가능 시간</div>
+    <div style="color:rgba(255,255,255,.8);font-size:12.5px;line-height:1.6">거래처 의원별 원장님 면담 가능 시간을 등록하고 주간 캘린더로 확인하세요.</div>
+  </div>
+  <div class="card">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeWeek(-1)">‹</button>
+      <div class="cal-title" id="cal-title"></div>
+      <button class="cal-nav" onclick="changeWeek(1)">›</button>
+    </div>
+    <div style="overflow-x:auto"><table class="week-grid" id="week-table"></table></div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#EDFBF5;border:1px solid #9EEBD0"></div>면담가능</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#FFF8E6;border:1px solid #F5D87A"></div>짧은면담</div>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+    <div class="tsec" style="margin:0">거래처 의원별 면담 시간</div>
+    <button class="btn-ico" onclick="openClinCalModal()">+ 등록</button>
+  </div>
+  <div id="clinic-cal-list"></div>
+</div>
+
+<!-- PHARMACY -->
+<div id="pg-pharm" class="pg">
+  <button class="btn-navy" onclick="openM('pm')">+ 문전약국 등록</button>
+  <div class="sw"><span class="sic">💊</span><input class="si" id="psrch" placeholder="약국명, 약사명 검색..." oninput="renderPharm()"></div>
+  <div class="fbr" id="pstat-fb">
+    <button class="fb on" onclick="setF('pstat','all',this,'pstat-fb');renderPharm()">전체</button>
+    <button class="fb" onclick="setF('pstat','vip',this,'pstat-fb');renderPharm()">⭐ VIP</button>
+    <button class="fb" onclick="setF('pstat','active',this,'pstat-fb');renderPharm()">✅ 활성</button>
+    <button class="fb" onclick="setF('pstat','care',this,'pstat-fb');renderPharm()">⚠️ 관리필요</button>
+  </div>
+  <div id="pharmlist"></div>
+</div>
+
+<!-- WHOLESALE -->
+<div id="pg-whole" class="pg">
+  <button class="btn-navy" onclick="openM('wm')">+ 도매상 등록</button>
+  <div class="sw"><span class="sic">🏭</span><input class="si" id="wsrch" placeholder="도매상명, 담당자 검색..." oninput="renderWhole()"></div>
+  <div class="fbr" id="wtype-fb">
+    <button class="fb on" onclick="setF('wtype','all',this,'wtype-fb');renderWhole()">전체</button>
+    <button class="fb" onclick="setF('wtype','national',this,'wtype-fb');renderWhole()">전국</button>
+    <button class="fb" onclick="setF('wtype','regional',this,'wtype-fb');renderWhole()">지역</button>
+    <button class="fb" onclick="setF('wtype','specialty',this,'wtype-fb');renderWhole()">전문</button>
+  </div>
+  <div id="wholelist"></div>
+</div>
+
+<!-- TASKS -->
+<div id="pg-tasks" class="pg">
+  <button class="voice-btn" id="vbtn" onclick="toggleVoice()">🎙 음성 메모로 할일 추가</button>
+  <div id="vtxt" style="display:none;background:#EBF5FF;border-radius:9px;padding:10px 12px;font-size:13px;color:var(--blue);margin-bottom:9px"></div>
+  <div class="ir">
+    <input class="ii" id="ti" placeholder="할일 입력 후 추가 버튼..." >
+    <button class="ab" onclick="addTask()">+</button>
+  </div>
+  <div id="tlist"></div>
+</div>
+
+<!-- PERFORMANCE -->
+<div id="pg-perf" class="pg">
+
+<!-- 분석 모드 선택 -->
+<div style="display:flex;gap:6px;margin-bottom:10px">
+  <button id="am-month" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted);text-align:center;background:var(--navy);color:var(--gold);border-color:var(--navy)" onclick="setAMode('month',this)">📅 월별 분석</button>
+  <button id="am-accum" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted);text-align:center" onclick="setAMode('accum',this)">📈 누계 분석</button>
+</div>
+
+<!-- 월 탭 -->
+<div id="mo-tabs" style="display:flex;overflow-x:auto;gap:5px;margin-bottom:9px;scrollbar-width:none;padding-bottom:2px"></div>
+
+<!-- 누계 기간 선택 -->
+<div id="accum-wrap" style="display:none;margin-bottom:9px">
+  <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">누계 기간 선택 (업로드된 월 자동 합산)</div>
+  <div style="display:flex;gap:7px;align-items:center">
+    <select id="accum-from" onchange="renderAccum()" style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;background:var(--card);color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none;cursor:pointer"></select>
+    <span style="color:var(--muted);font-size:13px">~</span>
+    <select id="accum-to" onchange="renderAccum()" style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;background:var(--card);color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none;cursor:pointer"></select>
+  </div>
+</div>
+
+<!-- 업로드 -->
+<div id="excel-dz" style="border:2px dashed var(--border);border-radius:13px;padding:22px 14px;text-align:center;cursor:pointer;margin-bottom:9px;background:var(--card);position:relative;transition:all .2s" ondragover="onExDrag(event,true)" ondragleave="onExDrag(event,false)" ondrop="onExDrop(event)">
+  <input type="file" accept=".csv,.tsv,.txt" onchange="onExSelect(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
+  <div style="font-size:24px;margin-bottom:6px">📂</div>
+  <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px">실적 파일 업로드 (선택된 월)</div>
+  <div style="font-size:10.5px;color:var(--muted);line-height:1.5">CSV 파일 지원 · 엑셀→다른이름저장→CSV 변환 후 업로드<br><span style="color:rgba(10,22,40,.4)">컬럼: 도매상(F열)·병원(L열)·약국(M열)·제품(Z열)·수량(AC열)·처방액(AE열)</span></div>
+</div>
+
+<!-- 분석 결과 -->
+<div id="excel-result" style="display:none">
+  <div id="analysis-lbl" style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px"></div>
+  <div id="analysis-summary" class="sg4" style="margin-bottom:9px"></div>
+  <div class="card"><div class="chd" id="trend-title">품목별 처방액</div><div style="display:flex;align-items:flex-end;gap:4px;height:90px;padding-bottom:14px" id="trend-chart"></div></div>
+  <div class="card"><div class="chd">도매상별 TOP 10</div><table id="r-wholesale" style="width:100%;border-collapse:collapse;font-size:11.5px"></table></div>
+  <div class="card"><div class="chd">병원별 TOP 10</div><table id="r-hosp" style="width:100%;border-collapse:collapse;font-size:11.5px"></table></div>
+  <div class="card"><div class="chd">문전약국별 TOP 10</div><table id="r-pharm" style="width:100%;border-collapse:collapse;font-size:11.5px"></table></div>
+  <div class="card"><div class="chd">품목별 TOP 10</div><table id="r-product" style="width:100%;border-collapse:collapse;font-size:11.5px"></table></div>
+  <div id="monthly-comp-card" class="card" style="display:none"><div class="chd">월별 처방액 추이</div><div style="display:flex;align-items:flex-end;gap:4px;height:90px;padding-bottom:14px" id="monthly-comp-chart"></div></div>
+  <div style="display:flex;gap:7px;margin-bottom:10px">
+    <button class="btn-out" style="flex:1" onclick="exportReport()">📄 보고서 복사</button>
+    <button class="btn-out" style="flex:1" onclick="shareKakaoReport()">💬 카카오 공유</button>
+  </div>
+</div>
+
+<!-- 기존 방문 현황 -->
+<div class="card"><div class="chd">월별 방문 건수</div><div class="bgrp" id="pbars"></div></div>
+<div class="card"><div class="chd">이달 KPI</div><div id="kpi"></div></div>
+<div class="card"><div class="chd">나의 배지</div><div id="bdg"></div></div>
+</div>
+
+<!-- DRUG DB -->
+<div id="pg-drug" class="pg">
+  <div class="card" style="background:linear-gradient(135deg,#1A3A5A,var(--navy));border:none;padding:13px;margin-bottom:9px">
+    <div style="color:var(--gold2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px">🔬 심평원 성분 검색 (실시간)</div>
+    <div style="display:flex;gap:6px">
+      <input id="hira-drug-kw" placeholder="성분명 검색 (예: 피르페니돈)" style="flex:1;padding:9px 11px;border:none;border-radius:9px;font-size:13px;background:rgba(255,255,255,.12);color:#fff;outline:none;font-family:inherit" oninput="this.style.color='#fff'" onkeydown="if(event.key==='Enter')drugCompAPISearch()">
+      <button id="hira-drug-btn" onclick="drugCompAPISearch()" style="padding:9px 13px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">🔍 검색</button>
+    </div>
+    <div id="hira-drug-result" style="margin-top:8px;color:rgba(255,255,255,.7);font-size:11px"></div>
+  </div>
+  <div class="sw"><span class="sic">💉</span><input class="si" id="dsrch" placeholder="성분명/제품명 검색..." oninput="renderDrug()"></div>
+  <div class="fbr" id="drug-fb">
+    <button class="fb on" onclick="setF('drug','all',this,'drug-fb');renderDrug()">전체</button>
+    <button class="fb" onclick="setF('drug','statin',this,'drug-fb');renderDrug()">스타틴</button>
+    <button class="fb" onclick="setF('drug','dm',this,'drug-fb');renderDrug()">당뇨</button>
+    <button class="fb" onclick="setF('drug','htn',this,'drug-fb');renderDrug()">고혈압</button>
+  </div>
+  <div class="card">
+    <div class="chd">CSO 계약 할인율 <span class="bdg b-gold">2025.12 기준</span></div>
+    <div style="overflow-x:auto"><table class="ctbl" id="csotbl"></table></div>
+    <div style="font-size:10.5px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">※ 실제 할인율은 계약조건에 따라 상이. 계약서 원본 필수 확인.</div>
+  </div>
+  <div id="dlist"></div>
+</div>
+
+<!-- NEWS -->
+<div id="pg-news" class="pg">
+  <div class="fbr" id="news-fb">
+    <button class="fb on" onclick="setF('news','all',this,'news-fb');renderNews()">전체</button>
+    <button class="fb" onclick="setF('news','ins',this,'news-fb');renderNews()">보험급여</button>
+    <button class="fb" onclick="setF('news','drug',this,'news-fb');renderNews()">신약승인</button>
+    <button class="fb" onclick="setF('news','cso',this,'news-fb');renderNews()">CSO</button>
+    <button class="fb" onclick="setF('news','guide',this,'news-fb');renderNews()">가이드라인</button>
+    <button class="fb" onclick="setF('news','mkt',this,'news-fb');renderNews()">시장동향</button>
+  </div>
+  <div class="card" style="padding:0 13px"><div id="nlist"></div></div>
+</div>
+
+<!-- PUBMED -->
+<div id="pg-pub" class="pg">
+  <div class="sw"><span class="sic">🔬</span><input class="si" id="pubsrch" placeholder="성분명 영문 검색 (rosuvastatin...)" oninput="renderPub()"></div>
+  <div class="fbr" id="pub-fb">
+    <button class="fb on" onclick="setF('pub','all',this,'pub-fb');renderPub()">전체</button>
+    <button class="fb" onclick="setF('pub','rct',this,'pub-fb');renderPub()">RCT</button>
+    <button class="fb" onclick="setF('pub','meta',this,'pub-fb');renderPub()">메타분석</button>
+    <button class="fb" onclick="setF('pub','review',this,'pub-fb');renderPub()">리뷰</button>
+  </div>
+  <div id="plist"></div>
+  <div style="text-align:center;padding:8px 0">
+    <button class="btn-out" onclick="window.open('https://pubmed.ncbi.nlm.nih.gov','_blank')">🔗 PubMed 바로가기</button>
+  </div>
+</div>
+
+<!-- TERMS -->
+<div id="pg-term" class="pg">
+  <div class="sw"><span class="sic">📖</span><input class="si" id="tsrch" placeholder="약어·용어 검색 (HbA1c, MACE...)" oninput="renderTerms()"></div>
+  <div class="fbr" id="term-fb">
+    <button class="fb on" onclick="setF('term','all',this,'term-fb');renderTerms()">전체</button>
+    <button class="fb" onclick="setF('term','lab',this,'term-fb');renderTerms()">검사</button>
+    <button class="fb" onclick="setF('term','cv',this,'term-fb');renderTerms()">심혈관</button>
+    <button class="fb" onclick="setF('term','dm',this,'term-fb');renderTerms()">당뇨</button>
+    <button class="fb" onclick="setF('term','trial',this,'term-fb');renderTerms()">임상</button>
+    <button class="fb" onclick="setF('term','reg',this,'term-fb');renderTerms()">규제</button>
+    <button class="fb" onclick="setF('term','pharma',this,'term-fb');renderTerms()">약리</button>
+  </div>
+  <div id="termlist"></div>
+</div>
+
+<!-- SOCIETY -->
+<div id="pg-soc" class="pg">
+  <div class="sw"><span class="sic">🏛</span><input class="si" id="socsrch" placeholder="학회명 검색..." oninput="renderSoc()"></div>
+  <div class="fbr" id="soc-fb">
+    <button class="fb on" onclick="setF('soc','all',this,'soc-fb');renderSoc()">전체</button>
+    <button class="fb" onclick="setF('soc','dm',this,'soc-fb');renderSoc()">당뇨</button>
+    <button class="fb" onclick="setF('soc','cv',this,'soc-fb');renderSoc()">심혈관</button>
+    <button class="fb" onclick="setF('soc','int',this,'soc-fb');renderSoc()">내과</button>
+    <button class="fb" onclick="setF('soc','world',this,'soc-fb');renderSoc()">국제</button>
+  </div>
+  <div id="soclist"></div>
+</div>
+
+<!-- GROWTH -->
+<div id="pg-growth" class="pg">
+  <div class="card" style="background:var(--navy);border:none">
+    <div style="color:var(--gold);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">30년 제약 영업 멘토의 한마디</div>
+    <div style="color:rgba(255,255,255,.92);font-size:13.5px;line-height:1.7" id="mentor"></div>
+  </div>
+  <div class="tsec">처방 전환 수익 시뮬레이터</div>
+  <div class="card">
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">경쟁사 → 우리 약 전환 시 연간 예상 수익</div>
+    <div class="fl"><label class="flbl">월 처방 수 (정): <strong id="lb-qty">200</strong></label><input type="range" id="simQty" min="50" max="1000" value="200" step="10" oninput="document.getElementById('lb-qty').textContent=this.value;calcSim()" style="width:100%;margin-top:6px"></div>
+    <div class="fl"><label class="flbl">약가 (원/정): <strong id="lb-price">800</strong></label><input type="range" id="simPrice" min="100" max="3000" value="800" step="50" oninput="document.getElementById('lb-price').textContent=this.value;calcSim()" style="width:100%;margin-top:6px"></div>
+    <div class="fl"><label class="flbl">CSO 마진율 (%): <strong id="lb-margin">20</strong>%</label><input type="range" id="simMargin" min="5" max="40" value="20" step="1" oninput="document.getElementById('lb-margin').textContent=this.value;calcSim()" style="width:100%;margin-top:6px"></div>
+    <div style="background:var(--navy);border-radius:12px;padding:16px;text-align:center;margin-top:8px">
+      <div style="color:rgba(255,255,255,.6);font-size:11px;margin-bottom:5px">연간 예상 수익</div>
+      <div style="color:var(--gold);font-size:30px;font-weight:900" id="simResult">₩384,000</div>
+      <div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:4px" id="simDetail"></div>
+    </div>
+  </div>
+  <div class="tsec">핵심 영업 노하우</div><div id="tips"></div>
+  <div class="tsec">고수의 하루 루틴</div><div id="rout"></div>
+</div>
+
+</div><!-- content-area end -->
+</div><!-- app end -->
+
+<!-- MODALS -->
+<!-- 거래처 등록 -->
+<div class="mbk" id="cm">
+  <div class="modal">
+    <div class="mttl">거래처 등록</div>
+    <div class="fl"><label class="flbl">유형 *</label>
+      <select class="fsel" id="f-ctype" onchange="toggleHospFields()">
+        <option value="hosp">🏥 병원 (종합병원·병원급)</option>
+        <option value="clinic">🏨 의원 (동네의원)</option>
+      </select>
+    </div>
+    <div class="frow">
+      <div class="fl"><label class="flbl">의사/원장명 *</label><input class="finp" id="f-cname" placeholder="홍길동 원장"></div>
+      <div class="fl"><label class="flbl">진료과목</label><input class="finp" id="f-cdept" placeholder="내과"></div>
+    </div>
+    <div class="fl"><label class="flbl">병원/의원명 *</label><input class="finp" id="f-chosp" placeholder="한빛내과의원"><button type="button" id="hosp-search-btn" onclick="hospAPISearch()" style="margin-top:5px;width:100%;padding:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--navy);font-weight:600">🔍 심평원 병원 자동검색</button></div>
+    <div id="hosp-fields">
+      <div class="frow">
+        <div class="fl"><label class="flbl">병상수</label><input class="finp" id="f-cbed" placeholder="300" type="number"></div>
+        <div class="fl"><label class="flbl">등급</label>
+          <select class="fsel" id="f-cgrade"><option>상급종합병원</option><option>종합병원</option><option>병원</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fl"><label class="flbl">연락처</label><input class="finp" id="f-cphone" placeholder="010-0000-0000" type="tel"></div>
+      <div class="fl"><label class="flbl">상태</label>
+        <select class="fsel" id="f-cstat"><option value="hot">🔥 HOT</option><option value="warm">🟡 WARM</option><option value="cold">🔵 COLD</option></select>
+      </div>
+    </div>
+    <div class="fl"><label class="flbl">주소</label><input class="finp" id="f-caddr" placeholder="서울시 강남구..."></div>
+    <div class="fl"><label class="flbl">관심 제품군</label><input class="finp" id="f-cprod" placeholder="스타틴, 당뇨"></div>
+    <div class="fl"><label class="flbl">연결 문전약국</label><input class="finp" id="f-cpharm" placeholder="바로앞 약국명"></div>
+    <div class="fl"><label class="flbl">메모</label><textarea class="ftxt" id="f-cmemo" placeholder="처방 패턴, 특이사항..."></textarea></div>
+    <div class="mbtns"><button class="bcnl" onclick="closeM('cm')">취소</button><button class="bsav" onclick="saveCust()">저장</button></div>
+  </div>
+</div>
+
+<!-- 병원 스케줄 추가 -->
+<div class="mbk" id="hschm">
+  <div class="modal">
+    <div class="mttl">병원 스케줄 추가</div>
+    <div class="fl"><label class="flbl">병원명 *</label><input class="finp" id="f-hname" placeholder="서울대병원"></div>
+    <div style="font-size:12px;color:var(--muted);background:var(--bg);padding:11px;border-radius:9px;margin-bottom:10px;line-height:1.6">
+      📌 CSV 업로드 형식:<br>
+      <code style="font-size:10.5px;background:#E8E6E0;padding:2px 5px;border-radius:3px">스텝명,부서,월AM,월PM,화AM,화PM,수AM,수PM,목AM,목PM,금AM,금PM,토AM,토PM</code><br>
+      값: 1(가능), 0(없음), 외래, 수술 등
+    </div>
+    <div id="step-rows"></div>
+    <button class="btn-out" style="width:100%;margin-bottom:10px" onclick="addStepRow()">+ 스텝 직접 추가</button>
+    <div class="mbtns"><button class="bcnl" onclick="closeM('hschm')">취소</button><button class="bsav" onclick="saveHospSch()">저장</button></div>
+  </div>
+</div>
+
+<!-- 의원 면담시간 등록 -->
+<div class="mbk" id="ccalm">
+  <div class="modal">
+    <div class="mttl">면담 가능 시간 등록</div>
+    <div class="fl"><label class="flbl">의원 선택 *</label><select class="fsel" id="f-cclinic"></select></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">요일별 면담 가능 시간을 탭하여 선택하세요</div>
+    <div id="day-slot-inputs"></div>
+    <div class="fl" style="margin-top:10px"><label class="flbl">메모</label><input class="finp" id="f-ccmemo" placeholder="면담 특이사항 (ex. 점심 후 30분만)"></div>
+    <div class="mbtns"><button class="bcnl" onclick="closeM('ccalm')">취소</button><button class="bsav" onclick="saveClinCal()">저장</button></div>
+  </div>
+</div>
+
+<!-- 문전약국 등록 -->
+<div class="mbk" id="pm">
+  <div class="modal">
+    <div class="mttl">문전약국 등록</div>
+    <div class="frow">
+      <div class="fl"><label class="flbl">약국명 *</label><input class="finp" id="f-pname" placeholder="연세약국"><button type="button" id="pharm-search-btn" onclick="pharmAPISearch()" style="margin-top:5px;width:100%;padding:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--navy);font-weight:600">🔍 심평원 약국 자동검색</button></div>
+      <div class="fl"><label class="flbl">약사명</label><input class="finp" id="f-ppharm" placeholder="김약사"></div>
+    </div>
+    <div class="frow">
+      <div class="fl"><label class="flbl">연락처</label><input class="finp" id="f-pphone" placeholder="02-0000-0000" type="tel"></div>
+      <div class="fl"><label class="flbl">상태</label>
+        <select class="fsel" id="f-pstat"><option value="vip">⭐ VIP</option><option value="active">✅ 활성</option><option value="care">⚠️ 관리필요</option></select>
+      </div>
+    </div>
+    <div class="fl"><label class="flbl">주소</label><input class="finp" id="f-paddr" placeholder="서울시 강남구..."></div>
+    <div class="fl"><label class="flbl">연결 거래처</label><input class="finp" id="f-phosp" placeholder="한빛내과의원"></div>
+    <div class="fl"><label class="flbl">주거래 도매상</label><input class="finp" id="f-pwhole" placeholder="한국메디팜"></div>
+    <div class="fl"><label class="flbl">월 발주 규모</label>
+      <select class="fsel" id="f-pvol"><option>소규모 (~50만원)</option><option>중규모 (50~200만원)</option><option>대규모 (200만원+)</option></select>
+    </div>
+    <div class="fl"><label class="flbl">메모</label><textarea class="ftxt" id="f-pmemo" placeholder="발주 패턴, 요청사항..."></textarea></div>
+    <div class="mbtns"><button class="bcnl" onclick="closeM('pm')">취소</button><button class="bsav" onclick="savePharm()">저장</button></div>
+  </div>
+</div>
+
+<!-- 도매상 등록 -->
+<div class="mbk" id="wm">
+  <div class="modal">
+    <div class="mttl">도매상 등록</div>
+    <div class="frow">
+      <div class="fl"><label class="flbl">도매상명 *</label><input class="finp" id="f-wname" placeholder="한국메디팜"></div>
+      <div class="fl"><label class="flbl">담당자</label><input class="finp" id="f-wman" placeholder="이담당"></div>
+    </div>
+    <div class="frow">
+      <div class="fl"><label class="flbl">유형</label>
+        <select class="fsel" id="f-wtype"><option value="national">전국</option><option value="regional">지역</option><option value="specialty">전문</option></select>
+      </div>
+      <div class="fl"><label class="flbl">배송주기</label>
+        <select class="fsel" id="f-wdel"><option>매일</option><option>주 3회</option><option>주 2회</option><option>주 1회</option></select>
+      </div>
+    </div>
+    <div class="fl"><label class="flbl">연락처</label><input class="finp" id="f-wphone" placeholder="02-0000-0000" type="tel"></div>
+    <div class="fl"><label class="flbl">관할 지역</label><input class="finp" id="f-warea" placeholder="서울·경기 전 지역"></div>
+    <div class="fl"><label class="flbl">담당 약국 수</label><input class="finp" id="f-wcnt" placeholder="약 150개소"></div>
+    <div class="fl"><label class="flbl">주요 취급 품목</label><input class="finp" id="f-wprod" placeholder="스타틴, 당뇨, 고혈압 전 계열"></div>
+    <div class="fl"><label class="flbl">메모</label><textarea class="ftxt" id="f-wmemo" placeholder="재고 현황, 특이사항..."></textarea></div>
+    <div class="mbtns"><button class="bcnl" onclick="closeM('wm')">취소</button><button class="bsav" onclick="saveWhole()">저장</button></div>
+  </div>
+</div>
+
+<!-- 지도 모달 -->
+<div class="mbk" id="mapm">
+  <div class="modal">
+    <div class="mttl">오늘 방문 경로</div>
+    <div style="background:var(--bg);border-radius:12px;border:1.5px dashed var(--border);padding:24px;text-align:center;margin-bottom:12px">
+      <div style="font-size:32px">🗺</div>
+      <p style="color:var(--muted);font-size:13px;margin-top:8px;line-height:1.5">네이버 지도 API 연동 시<br>병원·약국·도매상 위치 + 최적 동선 표시</p>
+    </div>
+    <div id="map-list"></div>
+    <div class="mbtns"><button class="bcnl" style="flex:1" onclick="closeM('mapm')">닫기</button></div>
+  </div>
+</div>
+
+<script>
+// ═══ DATA ════════════════════════════════════════════
+var QUOTES=['의사는 데이터를 보고 처방한다. 당신의 역할은 그 데이터를 가장 먼저, 가장 정확하게 전달하는 것이다.','문전약국이 처방전을 받아야 비로소 영업이 완성된다. 의사만큼 약사를 챙겨라.','도매상 담당자가 우리 제품을 먼저 추천하게 만드는 것이 채널 영업의 핵심이다.','처방 전환은 7번의 신뢰 축적 끝에 온다. 포기하지 마라.','급여기준을 경쟁사보다 먼저 아는 것이 현장 최강의 무기다.'];
+var MENTORS=['30년 현장에서 배운 것: 의사·약사·도매상은 하나의 유통 사슬이다. 세 곳 모두 우군으로 만든 제품이 결국 시장을 지배한다.','문전약국은 처방전의 최종 관문이다. 약사가 "이 약 재고 없어요"라고 한마디 하면 6개월 영업이 물거품 된다.','병원은 스텝(의사)별로 진료 패턴이 다르다. 누가 어느 시간에 진료하는지 외우는 것부터 시작하라.'];
+var custs=[{id:1,name:'김재호',hosp:'한빛내과의원',dept:'내과',phone:'010-1111-2222',type:'clinic',status:'hot',prods:'스타틴',note:'리피토 전환 기회',pharm:'한빛약국',addr:'서울 강남구',av:'김'},{id:2,name:'이민정',hosp:'서울대병원',dept:'내분비내과',phone:'02-2072-2222',type:'hosp',status:'warm',prods:'당뇨',note:'EMPEROR trial 관심',pharm:'서울대약국',addr:'서울 종로구',grade:'상급종합병원',beds:'1800',av:'이'},{id:3,name:'박성준',hosp:'연세심장의원',dept:'순환기내과',phone:'010-3333-4444',type:'clinic',status:'cold',prods:'스타틴',note:'첫 방문',pharm:'연세문전약국',addr:'서울 서대문구',av:'박'},{id:4,name:'최수현',hosp:'아산병원',dept:'내과',phone:'02-3010-0000',type:'hosp',status:'done',prods:'당뇨,스타틴',note:'자디앙 200정/월 확정',pharm:'아산약국',addr:'서울 송파구',grade:'상급종합병원',beds:'2700',av:'최'},{id:5,name:'정동훈',hosp:'강남의원',dept:'가정의학과',phone:'010-5555-6666',type:'clinic',status:'warm',prods:'당뇨',note:'JUPITER trial 제공',pharm:'강남문전약국',addr:'서울 강남구',av:'정'}];
+var pharmacies=[{id:1,name:'한빛약국',pharmacist:'김영수',addr:'서울 강남구',phone:'02-111-2222',linkedHosp:'한빛내과의원',wholesale:'한국메디팜',vol:'중규모',status:'vip',note:'월 2회 발주',av:'한'},{id:2,name:'연세문전약국',pharmacist:'이지영',addr:'서울 서대문구',phone:'02-222-3333',linkedHosp:'연세심장의원',wholesale:'지오영',vol:'소규모',status:'active',note:'재고 부족 잦음',av:'연'},{id:3,name:'서울대약국',pharmacist:'박민호',addr:'서울 종로구',phone:'02-333-4444',linkedHosp:'서울대병원',wholesale:'백제약품',vol:'대규모',status:'vip',note:'처방전 일 300건+',av:'서'},{id:4,name:'강남문전약국',pharmacist:'최선희',addr:'서울 강남구',phone:'02-444-5555',linkedHosp:'강남의원',wholesale:'한국메디팜',vol:'중규모',status:'care',note:'경쟁사 제품 우선 취급',av:'강'}];
+var wholesalers=[{id:1,name:'한국메디팜',manager:'홍길동',phone:'02-1234-5678',type:'national',area:'전국',cnt:'약 850개소',prods:'전 계열',delivery:'매일',stock:'로수바 ⚠️부족',note:'매주 화요일 정기 방문',av:'한'},{id:2,name:'지오영',manager:'이수진',phone:'02-2345-6789',type:'national',area:'전국',cnt:'약 1,200개소',prods:'ETC 전 계열',delivery:'매일',stock:'정상',note:'전국 1위 도매',av:'지'},{id:3,name:'백제약품',manager:'박철수',phone:'02-3456-7890',type:'regional',area:'서울·경기',cnt:'약 320개소',prods:'스타틴,고혈압',delivery:'주 3회',stock:'정상',note:'대형병원 문전 강세',av:'백'},{id:4,name:'서울약품',manager:'김미래',phone:'02-4567-8901',type:'specialty',area:'강남',cnt:'약 80개소',prods:'당뇨 전문',delivery:'주 2회',stock:'정상',note:'강남 당뇨 전문',av:'서'}];
+var tasks=[{id:1,title:'김재호 원장 — 로수바스타틴 데이터 전달',done:false,p:'high',grp:'오전',meta:'한빛내과의원 · 09:30'},{id:2,title:'한빛약국 — 재고 확인 및 발주 요청',done:false,p:'high',grp:'오전',meta:'문전약국 · 10:00'},{id:3,title:'한국메디팜 — 로수바스타틴 재고 긴급 확인',done:false,p:'high',grp:'오전',meta:'도매상 ⚠️ 긴급'},{id:4,title:'이민정 원장 — 트라젠타 급여기준 안내',done:false,p:'med',grp:'오후',meta:'서울대병원 · 14:00'},{id:5,title:'월간 실적 보고서 제출',done:false,p:'med',grp:'오후',meta:'금요일까지'},{id:6,title:'신제품 설명회 등록',done:true,p:'low',grp:'완료',meta:'완료됨'}];
+var ntid=7,isRec=false,hospSchedules=[],selHospId=null,selDay='all',clinicCals=[],calWeekOffset=0;
+var DAYS=['월','화','수','목','금','토'];
+var STEP_COLORS=['#1E6FD4','#0F9E6E','#E8A020','#E84545','#7C3AED','#0891B2','#E8601A','#DB2777'];
+var PERF=[{m:'7월',v:45},{m:'8월',v:52},{m:'9월',v:48},{m:'10월',v:61},{m:'11월',v:57},{m:'12월',v:72},{m:'1월',v:55},{m:'2월',v:68}];
+var BDGS=[{ic:'🏆',nm:'첫 계약',on:true},{ic:'🔥',nm:'연속7일',on:true},{ic:'💎',nm:'VIP원장',on:true},{ic:'💊',nm:'약국VIP',on:true},{ic:'🚀',nm:'목표120%',on:false},{ic:'👑',nm:'연간MVP',on:false}];
+var CSO=[{prod:'로수바스타틴 10mg',gen:'rosuvastatin',disc:32,margin:18,note:'급여인정'},{prod:'아토르바스타틴 40mg',gen:'atorvastatin',disc:28,margin:15,note:'1차선호'},{prod:'메트포르민 500mg SR',gen:'metformin',disc:22,margin:12,note:'⚠급여변경'},{prod:'엠파글리플로진 10mg',gen:'empagliflozin',disc:35,margin:20,note:'심혈관보호'},{prod:'텔미사르탄 80mg',gen:'telmisartan',disc:30,margin:17,note:'24h혈압'},{prod:'리나글립틴 5mg',gen:'linagliptin',disc:38,margin:22,note:'신기능무관'}];
+var DRUGS=[{id:'ros',name:'로수바스타틴',full:'Rosuvastatin',tags:['스타틴','고지혈증','심혈관'],cat:'statin',rows:[{l:'작용기전',v:'HMG-CoA 환원효소 억제'},{l:'주요효능',v:'LDL-C 45~55% 감소'},{l:'급여기준',v:'LDL≥160 또는 위험인자 2개+',c:'blue'},{l:'주의사항',v:'근병증·간독성 모니터링',c:'red'},{l:'경쟁약물',v:'아토르바스타틴, 피타바스타틴'},{l:'CSO할인율',v:'32%',c:'green'}]},{id:'emp',name:'엠파글리플로진',full:'Empagliflozin',tags:['SGLT2','당뇨','심부전'],cat:'dm',rows:[{l:'작용기전',v:'신장 SGLT2 억제'},{l:'주요효능',v:'HbA1c 0.7~0.8% 감소'},{l:'급여기준',v:'제2형 당뇨, 메트포르민 병용',c:'blue'},{l:'심혈관이득',v:'MACE 14%↓ (EMPA-REG)',c:'green'},{l:'경쟁약물',v:'다파글리플로진'},{l:'CSO할인율',v:'35%',c:'green'}]},{id:'met',name:'메트포르민',full:'Metformin',tags:['바이구아니드','당뇨','1차치료'],cat:'dm',rows:[{l:'작용기전',v:'간 포도당 생성 억제'},{l:'주요효능',v:'HbA1c 1~2% 감소'},{l:'급여기준',v:'⚠ 2025.12.15 변경예정',c:'red'},{l:'주의사항',v:'eGFR<30 금기',c:'red'},{l:'CSO할인율',v:'22%',c:'green'}]},{id:'tel',name:'텔미사르탄',full:'Telmisartan',tags:['ARB','고혈압','심혈관'],cat:'htn',rows:[{l:'작용기전',v:'AT1 수용체 차단'},{l:'주요효능',v:'24시간 혈압조절'},{l:'급여기준',v:'고혈압 1차 치료',c:'blue'},{l:'경쟁약물',v:'올메사르탄, 발사르탄'},{l:'CSO할인율',v:'30%',c:'green'}]}];
+var NEWS_DATA=[{cat:'보험급여',cls:'b-green',t:'메트포르민 급여기준 강화 — 2025.12.15 시행',d:'2025.12.01',sub:'eGFR 기준 강화',type:'ins'},{cat:'신약승인',cls:'b-purple',t:'국산 GLP-1 제제 에페글레나타이드 급여 등재 추진',d:'2025.11.28',sub:'비만 동반 당뇨 환자 급여 추진',type:'drug'},{cat:'CSO',cls:'b-gold',t:'CSO 영업 규제 개정안 입법예고 — 리베이트 규정 강화',d:'2025.11.25',sub:'실거래가 신고 의무화',type:'cso'},{cat:'가이드라인',cls:'b-blue',t:'대한당뇨병학회 2025년 진료지침 개정',d:'2025.11.15',sub:'GLP-1 우선 권고 추가',type:'guide'},{cat:'시장동향',cls:'b-teal',t:'국내 CSO 시장 2025년 8,500억 돌파',d:'2025.11.08',sub:'전년比 12% 성장',type:'mkt'}];
+var PUBS=[{t:'EMPEROR-Preserved: Empagliflozin in HFpEF',j:'NEJM',y:'2021',id:'34449189',type:'rct',tags:['empagliflozin','HFpEF'],a:'엠파글리플로진이 HFpEF에서 심혈관 사망 및 심부전 입원을 유의하게 감소(HR 0.79).'},{t:'JUPITER: Rosuvastatin to Prevent Vascular Events',j:'NEJM',y:'2008',id:'18997196',type:'rct',tags:['rosuvastatin','prevention'],a:'LDL 정상이지만 CRP 상승 환자에서 로수바스타틴이 MACE 44% 감소.'},{t:'Metformin versus other first-line therapy: meta-analysis',j:'Diabetes Care',y:'2022',id:'35344027',type:'meta',tags:['metformin','T2DM'],a:'메트포르민은 HbA1c 감소 효과 동등하며 심혈관 사건 감소 및 비용 효과 우수.'}];
+var TERMS=[{abbr:'HbA1c',full:'Glycated Hemoglobin A1c',ko:'당화혈색소',cat:'lab',def:'지난 2~3개월 평균 혈당. 당뇨 진단(≥6.5%) 및 치료 목표(<7.0%)에 핵심 사용.'},{abbr:'eGFR',full:'Estimated Glomerular Filtration Rate',ko:'추정 사구체 여과율',cat:'lab',def:'신장 기능 수치화. 60 미만 시 만성신장질환. 메트포르민은 30 미만 금기.'},{abbr:'LDL-C',full:'Low-Density Lipoprotein Cholesterol',ko:'저밀도 지단백 콜레스테롤',cat:'lab',def:'심혈관질환 주요 위험인자. 고위험군 <70 mg/dL, 초고위험군 <55 mg/dL 목표.'},{abbr:'MACE',full:'Major Adverse Cardiovascular Events',ko:'주요 심혈관 사건',cat:'cv',def:'심혈관 사망 + 비치명적 심근경색 + 비치명적 뇌졸중의 복합 결과 지표.'},{abbr:'SGLT2',full:'Sodium-Glucose Cotransporter-2',ko:'나트륨-포도당 공동수송체 2',cat:'dm',def:'신장 근위세뇨관 포도당 재흡수 수송체. SGLT2 억제제(글리플로진)의 치료 타깃.'},{abbr:'CSO',full:'Contract Sales Organization',ko:'계약 영업 조직',cat:'reg',def:'제약사로부터 영업 업무를 수탁받아 수행하는 외주 영업 전문 조직.'},{abbr:'NNT',full:'Number Needed to Treat',ko:'치료 필요 수',cat:'trial',def:'1명 이득을 위해 치료해야 하는 환자 수. 낮을수록 효과 높음.'},{abbr:'AUC',full:'Area Under the Curve',ko:'곡선 하 면적',cat:'pharma',def:'혈중 약물 농도-시간 곡선의 면적. 약물 전신 노출량. 생체이용률·약동학 비교.'}];
+var SOCS=[{name:'대한당뇨병학회',full:'KDA',ic:'🔴',color:'#FFF0ED',cat:'dm',url:'https://www.diabetes.or.kr',confs:[{name:'춘계학술대회',date:'2026.04.18~19',loc:'서울 코엑스',note:'D-34'},{name:'연수강좌',date:'2026.02.22',loc:'서울',note:'마감임박'}]},{name:'대한고혈압학회',full:'KSH',ic:'❤️',color:'#FFF8E6',cat:'cv',url:'https://www.koreanhypertension.org',confs:[{name:'춘계학술대회',date:'2026.05.09~10',loc:'서울 인터컨티넨탈',note:'3월 오픈'}]},{name:'한국지질·동맥경화학회',full:'KSLA',ic:'🟡',color:'#FFFBEA',cat:'cv',url:'https://www.lipid.or.kr',confs:[{name:'연례학술대회',date:'2026.03.28~29',loc:'서울 밀레니엄힐튼',note:'D-14'}]},{name:'대한심장학회',full:'KSC',ic:'💙',color:'#EBF5FF',cat:'cv',url:'https://www.circulation.or.kr',confs:[{name:'KSC 2026',date:'2026.10.15~17',loc:'서울 코엑스',note:'초록접수 예정'}]},{name:'ADA',full:'American Diabetes Association',ic:'🌎',color:'#EDFBF5',cat:'world',url:'https://www.diabetes.org',confs:[{name:'ADA 2026',date:'2026.06.19~22',loc:'미국 뉴올리언스',note:'국제등록 가능'}]},{name:'ESC',full:'European Society of Cardiology',ic:'🌍',color:'#F5EDFF',cat:'world',url:'https://www.escardio.org',confs:[{name:'ESC 2026',date:'2026.08.28~09.01',loc:'스페인 바르셀로나',note:'Early reg.오픈'}]}];
+var TIPS=[{cat:'채널 전략',title:'의사-약국-도매상 삼각편대',body:'처방→조제→공급의 세 축이 모두 작동해야 진짜 영업이다. 의사만 공략하고 약국에 재고가 없으면 처방전이 반환된다.'},{cat:'병원 공략',title:'스텝별 진료시간 파악이 먼저',body:'같은 병원이라도 스텝마다 진료 패턴이 다르다. 누가 어느 시간에 진료하는지 시간표를 외우는 것부터 시작하라.'},{cat:'문전약국',title:'약사는 두 번째 의사다',body:'약사가 "이 약 부작용 있어요"라고 한마디 하면 처방이 바뀐다. 약사에게도 임상 데이터를 제공하라.'},{cat:'도매상 활용',title:'도매 담당자를 내 편으로',body:'도매 담당자가 약국에 "이 제품 좋아요"라고 먼저 말하게 만들어라. 그것이 진정한 채널 마케팅이다.'}];
+var ROUTS=[{tm:'07:00',tx:'방문 병원 스텝 진료시간 & 급여기준 복습',ic:'📋'},{tm:'08:30',tx:'HOT 거래처 우선 방문 (라운딩 시작 전)',ic:'🔥'},{tm:'10:00',tx:'문전약국 재고 & 발주 현황 확인',ic:'💊'},{tm:'14:00',tx:'도매상 담당자 정기 연락 & 재고 점검',ic:'🏭'},{tm:'17:00',tx:'처방·발주 팔로업 문자 발송',ic:'✉️'},{tm:'19:00',tx:'오늘 방문 기록 & 내일 계획 수립',ic:'📝'}];
+
+// ═══ STATE ════════════════════════════════════
+var F={ctype:'all',cstat:'all',pstat:'all',wtype:'all',drug:'all',news:'all',pub:'all',term:'all',soc:'all'};
+function setF(k,v,el,gid){F[k]=v;if(gid){document.querySelectorAll('#'+gid+' .fb').forEach(function(b){b.classList.remove('on');});}el.classList.add('on');}
+function go(id){document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});document.querySelectorAll('.ntab').forEach(function(b){b.classList.remove('on');});var pg=document.getElementById('pg-'+id);var nt=document.getElementById('nt-'+id);if(pg)pg.classList.add('on');if(nt)nt.classList.add('on');document.querySelector('.content-area').scrollTop=0;}
+function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function val(id){var el=document.getElementById(id);return el?el.value:'';}
+function clearF(ids){ids.forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});}
+function openM(id){var el=document.getElementById(id);if(el)el.classList.add('on');}
+function closeM(id){var el=document.getElementById(id);if(el)el.classList.remove('on');}
+
+// ═══ CUSTOMER ════════════════════════════════
+function renderCust(){
+  var q=(val('csrch')||'').toLowerCase();
+  var sm={hot:['🔥 HOT','s-hot'],warm:['🟡 WARM','s-warm'],cold:['🔵 COLD','s-cold'],done:['✅ 완료','s-done']};
+  var ac=['#FFF0ED;#E84545','#EBF5FF;#1E6FD4','#EDFBF5;#0F9E6E','#FFF8E6;#B07800','#F5EDFF;#7C3AED'];
+  var filtered=custs.filter(function(c){if(F.ctype!=='all'&&c.type!==F.ctype)return false;if(F.cstat!=='all'&&c.status!==F.cstat)return false;if(q&&!c.name.includes(q)&&!(c.hosp||'').toLowerCase().includes(q)&&!(c.dept||'').includes(q))return false;return true;});
+  var el=document.getElementById('clist');if(!el)return;
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">검색 결과 없음</div>';return;}
+  el.innerHTML=filtered.map(function(c,i){var p=ac[i%ac.length].split(';');var sm2=sm[c.status]||['?','s-cold'];var tt=c.type==='hosp'?'<span class="type-hosp">병원'+(c.grade?' · '+c.grade:'')+'</span>':'<span class="type-clinic">의원</span>';return'<div class="ci" onclick="alert(\'['+esc(c.type==='hosp'?'병원':'의원')+'] '+esc(c.name)+'\\n'+esc(c.hosp||'')+'  '+esc(c.dept||'')+'\\n📞 '+esc(c.phone||'-')+'\\n📍 '+esc(c.addr||'-')+'\\n💊 문전약국: '+esc(c.pharm||'-')+'\\n관심제품: '+esc(c.prods||'-')+'\\n메모: '+esc(c.note||'-')+'\')">'+'<div class="av avr" style="background:'+p[0]+';color:'+p[1]+'">'+esc(c.av||c.name[0])+'</div>'+'<div class="cif"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap"><span class="cn">'+esc(c.name)+'</span>'+tt+'</div><div class="cc">'+esc(c.hosp||'')+' · '+esc(c.dept||'')+'</div>'+(c.pharm?'<div class="cc" style="color:var(--gold)">💊 '+esc(c.pharm)+'</div>':'')+(c.note?'<div class="cm">'+esc(c.note)+'</div>':'')+'</div><span class="pill bdg '+sm2[1]+'">'+sm2[0]+'</span></div>';}).join('');
+}
+function toggleHospFields(){var v=val('f-ctype');var hf=document.getElementById('hosp-fields');if(hf)hf.style.display=(v==='hosp')?'block':'none';}
+function saveCust(){var name=val('f-cname').trim();if(!name){alert('의사/원장명을 입력해주세요');return;}custs.unshift({id:Date.now(),name:name,av:name[0],type:val('f-ctype')||'clinic',hosp:val('f-chosp'),dept:val('f-cdept'),phone:val('f-cphone'),addr:val('f-caddr'),prods:val('f-cprod'),status:val('f-cstat')||'warm',pharm:val('f-cpharm'),note:val('f-cmemo'),grade:val('f-cgrade'),beds:val('f-cbed')});clearF(['f-cname','f-chosp','f-cdept','f-cphone','f-caddr','f-cprod','f-cpharm','f-cmemo','f-cbed']);closeM('cm');renderCust();updateHospSel();updateClinicSel();}
+
+// ═══ HOSPITAL SCHEDULE ════════════════════════
+function updateHospSel(){var sel=document.getElementById('hsch-sel');if(!sel)return;var cur=sel.value;sel.innerHTML='<option value="">-- 병원 선택 --</option>';hospSchedules.forEach(function(h){var o=document.createElement('option');o.value=h.id;o.textContent=h.name;sel.appendChild(o);});if(cur)sel.value=cur;}
+function renderHospSch(){var sel=document.getElementById('hsch-sel');if(!sel)return;selHospId=sel.value?parseInt(sel.value):null;var hosp=hospSchedules.find(function(h){return h.id===selHospId;});var cont=document.getElementById('hsch-content');var empty=document.getElementById('hsch-empty');if(!hosp||!hosp.steps||!hosp.steps.length){if(cont)cont.style.display='none';if(empty)empty.style.display='block';return;}if(cont)cont.style.display='block';if(empty)empty.style.display='none';renderDayTabs(hosp);renderSchTable(hosp,selDay);renderStepDetail(hosp);}
+function renderDayTabs(hosp){var now=new Date();var todayIdx=now.getDay()-1;var tabs=document.getElementById('day-tabs');if(!tabs)return;var html='<button class="day-tab'+(selDay==='all'?' on':'')+'" onclick="selDay=\'all\';renderSchTable(getSelHosp(),\'all\')">전체</button>';DAYS.forEach(function(d,i){var isToday=i===todayIdx;html+='<button class="day-tab'+(selDay===d?' on':'')+(isToday?' today':'')+'" onclick="selDay=\''+d+'\';renderSchTable(getSelHosp(),\''+d+'\')">'+(isToday?'<span style="font-size:8px;display:block;color:var(--gold)">오늘</span>':'')+d+'</button>';});tabs.innerHTML=html;}
+function getSelHosp(){return hospSchedules.find(function(h){return h.id===selHospId;})||null;}
+function cellHtml(v){if(!v||v==='0'||v===''||v.toLowerCase()==='없음'||v.toLowerCase()==='x'||v==='-'||v.toLowerCase()==='no')return'<span class="cell-none">—</span>';if(v==='1'||v.toLowerCase()==='있음'||v.toLowerCase()==='o'||v.toLowerCase()==='가능'||v.toLowerCase()==='yes'||v.toLowerCase()==='y')return'<span class="cell-avail">✓</span>';return'<span class="cell-partial">'+esc(v)+'</span>';}
+function renderSchTable(hosp,day){var tbl=document.getElementById('sch-table');var title=document.getElementById('hsch-title');if(!tbl||!hosp)return;if(title)title.textContent=hosp.name+(day==='all'?' 주간 전체':' '+day+'요일');var showDays=day==='all'?DAYS:[day];var thead='<thead><tr><th>스텝/부서</th>';showDays.forEach(function(d){thead+='<th colspan="2">'+d+'</th>';});thead+='</tr><tr><th></th>';showDays.forEach(function(){thead+='<th style="font-size:8px;background:#1A2F5A;padding:4px">AM</th><th style="font-size:8px;background:#1A2F5A;padding:4px">PM</th>';});thead+='</tr></thead>';var tbody='<tbody>';hosp.steps.forEach(function(step){tbody+='<tr><td><div style="font-weight:700;font-size:11px;color:var(--navy)">'+esc(step.name||'')+'</div><div style="font-size:9px;color:var(--muted)">'+esc(step.dept||'')+'</div></td>';showDays.forEach(function(d){tbody+='<td>'+cellHtml(step.schedule[d+'AM'])+'</td><td>'+cellHtml(step.schedule[d+'PM'])+'</td>';});tbody+='</tr>';});tbody+='</tbody>';tbl.innerHTML=thead+tbody;}
+function renderStepDetail(hosp){var el=document.getElementById('step-detail');if(!el||!hosp)return;var okVals=['1','있음','o','가능','O','Y','y','yes','Yes'];el.innerHTML=hosp.steps.map(function(step,i){var color=STEP_COLORS[i%STEP_COLORS.length];var amS=[],pmS=[];DAYS.forEach(function(d){if(step.schedule[d+'AM']&&okVals.indexOf(step.schedule[d+'AM'].trim?step.schedule[d+'AM'].trim():step.schedule[d+'AM'])>-1)amS.push(d);if(step.schedule[d+'PM']&&okVals.indexOf(step.schedule[d+'PM'].trim?step.schedule[d+'PM'].trim():step.schedule[d+'PM'])>-1)pmS.push(d);});return'<div class="step-lane"><div class="step-dot" style="background:'+color+'"></div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--navy)">'+esc(step.name)+'</div><div style="font-size:11px;color:var(--muted)">'+esc(step.dept)+'</div><div class="step-times">'+amS.map(function(d){return'<span class="step-slot slot-am">'+d+' 오전</span>';}).join('')+pmS.map(function(d){return'<span class="step-slot slot-pm">'+d+' 오후</span>';}).join('')+(!amS.length&&!pmS.length?'<span class="step-slot slot-off">미등록</span>':'')+'</div></div></div>';}  ).join('');}
+function onFileSelect(e){var f=e.target.files[0];if(f)parseFile(f);}
+function parseFile(file){var reader=new FileReader();reader.onload=function(e){var text=e.target.result;var rows=text.trim().split(/\r?\n/);var steps=[];rows.forEach(function(row,idx){if(idx===0&&(row.toLowerCase().includes('스텝')||row.toLowerCase().includes('step')||row.toLowerCase().includes('name')))return;var cols=row.split(/[,\t]/);if(cols.length<2)return;var name=cols[0].trim(),dept=cols[1]?cols[1].trim():'';var keys=['월AM','월PM','화AM','화PM','수AM','수PM','목AM','목PM','금AM','금PM','토AM','토PM'];var schedule={};keys.forEach(function(k,i){schedule[k]=cols[2+i]?cols[2+i].trim():'';});steps.push({name:name,dept:dept,schedule:schedule});});if(!steps.length){alert('파일 형식을 확인해주세요.\n\n형식: 스텝명,부서,월AM,월PM,화AM,화PM,...');return;}var sel=document.getElementById('hsch-sel');var hospName=sel&&sel.value&&getSelHosp()?getSelHosp().name:file.name.replace(/\.[^.]+$/,'');if(selHospId&&getSelHosp()){getSelHosp().steps=steps;}else{var newH={id:Date.now(),name:hospName,steps:steps};hospSchedules.push(newH);selHospId=newH.id;updateHospSel();var s2=document.getElementById('hsch-sel');if(s2)s2.value=newH.id;}selDay='all';renderHospSch();alert('✅ '+steps.length+'명의 스텝 스케줄을 불러왔습니다!');};reader.onerror=function(){alert('파일 읽기 오류가 발생했습니다.');};reader.readAsText(file,'UTF-8');}
+function loadSampleHosp(){var sample={id:Date.now(),name:'서울대병원 (샘플)',steps:[{name:'김철수',dept:'내분비내과',schedule:{월AM:'1',월PM:'1',화AM:'0',화PM:'외래',수AM:'1',수PM:'0',목AM:'수술',목PM:'0',금AM:'1',금PM:'1',토AM:'0',토PM:'0'}},{name:'이영희',dept:'내분비내과',schedule:{월AM:'0',월PM:'외래',화AM:'1',화PM:'1',수AM:'0',수PM:'1',목AM:'1',목PM:'1',금AM:'0',금PM:'외래',토AM:'1',토PM:'0'}},{name:'박지훈',dept:'순환기내과',schedule:{월AM:'1',월PM:'0',화AM:'1',화PM:'1',수AM:'수술',수PM:'0',목AM:'1',목PM:'0',금AM:'1',금PM:'1',토AM:'0',토PM:'0'}},{name:'최미래',dept:'내과',schedule:{월AM:'0',월PM:'1',화AM:'0',화PM:'1',수AM:'1',수PM:'1',목AM:'0',목PM:'외래',금AM:'0',금PM:'1',토AM:'1',토PM:'0'}}]};hospSchedules.push(sample);selHospId=sample.id;selDay='all';updateHospSel();var sel=document.getElementById('hsch-sel');if(sel)sel.value=sample.id;renderHospSch();}
+function addStepRow(){var area=document.getElementById('step-rows');if(!area)return;var i=area.children.length;var div=document.createElement('div');div.style.cssText='background:var(--bg);border-radius:10px;padding:11px;margin-bottom:8px';div.innerHTML='<div style="display:flex;gap:6px;margin-bottom:8px"><input class="finp" placeholder="스텝명" id="sr-name-'+i+'" style="flex:1"><input class="finp" placeholder="부서" id="sr-dept-'+i+'" style="flex:1"></div><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px">'+DAYS.map(function(d){return'<div style="text-align:center"><div style="font-weight:700;color:var(--navy);font-size:11px;margin-bottom:3px">'+d+'</div><select class="fsel" id="sr-'+d+'AM-'+i+'" style="padding:5px 2px;font-size:10px;margin-bottom:3px"><option value="">-</option><option value="1">가능</option><option value="외래">외래</option><option value="수술">수술</option></select><select class="fsel" id="sr-'+d+'PM-'+i+'" style="padding:5px 2px;font-size:10px"><option value="">-</option><option value="1">가능</option><option value="외래">외래</option><option value="수술">수술</option></select></div>';}).join('')+'</div>';area.appendChild(div);}
+function saveHospSch(){var name=val('f-hname').trim();if(!name){alert('병원명을 입력해주세요');return;}var area=document.getElementById('step-rows');var count=area?area.children.length:0;var steps=[];for(var i=0;i<count;i++){var sname=val('sr-name-'+i).trim();if(!sname)continue;var schedule={};DAYS.forEach(function(d){schedule[d+'AM']=val('sr-'+d+'AM-'+i)||'';schedule[d+'PM']=val('sr-'+d+'PM-'+i)||'';});steps.push({name:sname,dept:val('sr-dept-'+i),schedule:schedule});}var newH={id:Date.now(),name:name,steps:steps};hospSchedules.push(newH);selHospId=newH.id;selDay='all';updateHospSel();var sel=document.getElementById('hsch-sel');if(sel)sel.value=newH.id;var el=document.getElementById('f-hname');if(el)el.value='';if(area)area.innerHTML='';closeM('hschm');renderHospSch();}
+
+// ═══ CLINIC CALENDAR ══════════════════════════
+function updateClinicSel(){var sel=document.getElementById('f-cclinic');if(!sel)return;var clinics=custs.filter(function(c){return c.type==='clinic';});sel.innerHTML=clinics.map(function(c){return'<option value="'+c.id+'">'+esc(c.name)+' ('+esc(c.hosp||'')+')</option>';}).join('');}
+function buildDaySlotInputs(){var el=document.getElementById('day-slot-inputs');if(!el)return;var slots=['08:00-09:00','09:00-10:00','10:00-11:00','11:00-12:00','12:00-13:00','13:00-14:00','14:00-15:00','15:00-16:00','16:00-17:00','17:00-18:00'];el.innerHTML=DAYS.map(function(d){return'<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px">'+d+'요일</div><div style="display:flex;flex-wrap:wrap;gap:5px">'+slots.map(function(s){var sid='dsi-'+d+'-'+s.replace(/:/g,'-').replace(/-/g,'_');return'<span class="tslot ts-gray" id="sp-'+sid+'" onclick="toggleSlot(\''+sid+'\')" style="min-width:60px"><span class="ts-time">'+s.split('-')[0]+'</span><span class="ts-label">탭선택</span></span>';}).join('')+'</div></div>';}).join('');}
+var slotState={};
+function toggleSlot(sid){slotState[sid]=!slotState[sid];var sp=document.getElementById('sp-'+sid);if(!sp)return;sp.className='tslot '+(slotState[sid]?'ts-green':'ts-gray');if(sp.querySelector('.ts-label'))sp.querySelector('.ts-label').textContent=slotState[sid]?'✓가능':'탭선택';}
+function openClinCalModal(){updateClinicSel();slotState={};buildDaySlotInputs();openM('ccalm');}
+function saveClinCal(){var sel=document.getElementById('f-cclinic');if(!sel||!sel.value){alert('의원을 선택해주세요');return;}var clinicId=parseInt(sel.value);var slotKeys=['08:00-09:00','09:00-10:00','10:00-11:00','11:00-12:00','12:00-13:00','13:00-14:00','14:00-15:00','15:00-16:00','16:00-17:00','17:00-18:00'];var slots={};DAYS.forEach(function(d){slots[d]=[];slotKeys.forEach(function(s){var sid='dsi-'+d+'-'+s.replace(/:/g,'-').replace(/-/g,'_');if(slotState[sid])slots[d].push(s);});});var existing=clinicCals.findIndex(function(c){return c.clinicId===clinicId;});var entry={id:existing>=0?clinicCals[existing].id:Date.now(),clinicId:clinicId,slots:slots,memo:val('f-ccmemo')};if(existing>=0)clinicCals[existing]=entry;else clinicCals.push(entry);var m=document.getElementById('f-ccmemo');if(m)m.value='';closeM('ccalm');renderClinicCal();renderWeekTable();}
+function renderClinicCal(){var el=document.getElementById('clinic-cal-list');if(!el)return;if(!clinicCals.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">등록된 면담 시간이 없습니다.<br>위 버튼으로 등록하세요.</div>';return;}var ac=['#FFF0ED;#E84545','#EBF5FF;#1E6FD4','#EDFBF5;#0F9E6E','#FFF8E6;#B07800','#F5EDFF;#7C3AED'];el.innerHTML=clinicCals.map(function(cc,ci){var clinic=custs.find(function(c){return c.id===cc.clinicId;});if(!clinic)return'';var p=ac[ci%ac.length].split(';');var allS=[];DAYS.forEach(function(d){if(cc.slots[d]&&cc.slots[d].length)allS.push({day:d,times:cc.slots[d]});});return'<div class="clinic-time-item"><div class="cti-head"><div class="cti-av" style="background:'+p[0]+';color:'+p[1]+'">'+esc(clinic.av||clinic.name[0])+'</div><div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+esc(clinic.name)+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(clinic.hosp||'')+' · '+esc(clinic.dept||'')+'</div>'+(cc.memo?'<div style="font-size:11px;color:var(--muted);margin-top:2px">📝 '+esc(cc.memo)+'</div>':'')+'</div><button class="btn-ico" style="padding:6px 10px;font-size:11px" onclick="editClinCal('+cc.clinicId+')">수정</button></div><div class="time-slots-row">'+allS.map(function(s){return s.times.map(function(t){var h=parseInt(t);var cls=h<12?'ts-green':h<14?'ts-gold':'ts-green';return'<div class="tslot '+cls+'"><span class="ts-time">'+s.day+' '+t.split('-')[0]+'</span><span class="ts-label">가능</span></div>';}).join('');}).join('')+(allS.length===0?'<div class="tslot ts-gray"><span class="ts-time">미등록</span><span class="ts-label">등록필요</span></div>':'')+'</div></div>';}).join('');}
+function editClinCal(clinicId){updateClinicSel();slotState={};buildDaySlotInputs();var sel=document.getElementById('f-cclinic');if(sel)sel.value=clinicId;var existing=clinicCals.find(function(c){return c.clinicId===clinicId;});if(existing){var slotKeys=['08:00-09:00','09:00-10:00','10:00-11:00','11:00-12:00','12:00-13:00','13:00-14:00','14:00-15:00','15:00-16:00','16:00-17:00','17:00-18:00'];DAYS.forEach(function(d){(existing.slots[d]||[]).forEach(function(s){var sid='dsi-'+d+'-'+s.replace(/:/g,'-').replace(/-/g,'_');slotState[sid]=true;var sp=document.getElementById('sp-'+sid);if(sp){sp.className='tslot ts-green';if(sp.querySelector('.ts-label'))sp.querySelector('.ts-label').textContent='✓가능';}});});var m=document.getElementById('f-ccmemo');if(m&&existing.memo)m.value=existing.memo;}openM('ccalm');}
+function renderWeekTable(){var tbl=document.getElementById('week-table');var title=document.getElementById('cal-title');if(!tbl)return;var now=new Date();var weekStart=new Date(now);var day=weekStart.getDay();var diff=day===0?-6:1-day;weekStart.setDate(weekStart.getDate()+diff+calWeekOffset*7);var dates=[];for(var i=0;i<6;i++){var d=new Date(weekStart);d.setDate(d.getDate()+i);dates.push(d);}if(title)title.textContent=fmtDate(weekStart)+' ~ '+fmtDate(dates[5]);var timeSlots=['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00'];var thead='<thead><tr><th>시간</th>'+DAYS.map(function(d,i){var isToday=dates[i].toDateString()===now.toDateString();return'<th style="'+(isToday?'color:var(--gold2)':'')+'">'+d+'<br><span style="font-size:8px;opacity:.65">'+fmtMD(dates[i])+'</span></th>';}).join('')+'</tr></thead>';var tbody='<tbody>';timeSlots.forEach(function(ts){var hour=parseInt(ts);var slotStr=ts+'-'+(hour+1)+':00';tbody+='<tr><td>'+ts+'</td>';DAYS.forEach(function(d){var avail=clinicCals.filter(function(cc){return cc.slots[d]&&cc.slots[d].indexOf(slotStr)>-1;});if(!avail.length){tbody+='<td></td>';return;}var clinic=avail.length===1?custs.find(function(c){return c.id===avail[0].clinicId;}):null;var cls=avail.length>1?'wslot-best':'wslot-avail';var lbl=clinic?clinic.name.substring(0,3):avail.length+'곳';tbody+='<td><span class="wslot '+cls+'">'+esc(lbl)+'</span></td>';});tbody+='</tr>';});tbody+='</tbody>';tbl.innerHTML=thead+tbody;}
+function changeWeek(dir){calWeekOffset+=dir;renderWeekTable();}
+function fmtDate(d){return(d.getMonth()+1)+'월 '+d.getDate()+'일';}
+function fmtMD(d){return(d.getMonth()+1)+'/'+(d.getDate());}
+
+// ═══ PHARMACY ════════════════════════════════
+function renderPharm(){var q=(val('psrch')||'').toLowerCase();var sc={vip:['⭐ VIP','b-gold'],active:['✅ 활성','b-green'],care:['⚠️ 관리필요','b-red']};var ac=['#FFF8E6;#B07800','#EDFBF5;#0F9E6E','#FFF0ED;#E84545','#EBF5FF;#1E6FD4'];var filtered=pharmacies.filter(function(p){if(F.pstat!=='all'&&p.status!==F.pstat)return false;if(q&&!p.name.includes(q)&&!(p.pharmacist||'').includes(q))return false;return true;});var el=document.getElementById('pharmlist');if(!el)return;if(!filtered.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">검색 결과 없음</div>';return;}el.innerHTML=filtered.map(function(p,i){var pp=ac[i%ac.length].split(';');var s=sc[p.status]||['','b-green'];return'<div class="ci" onclick="alert(\'[문전약국] '+esc(p.name)+'\\n약사: '+esc(p.pharmacist||'-')+'\\n📞 '+esc(p.phone||'-')+'\\n🏥 '+esc(p.linkedHosp||'-')+'\\n🏭 도매: '+esc(p.wholesale||'-')+'\\n발주규모: '+esc(p.vol||'-')+'\\n메모: '+esc(p.note||'-')+'\')">'+'<div class="av" style="background:'+pp[0]+';color:'+pp[1]+';border-radius:10px">'+esc(p.av||p.name[0])+'</div>'+'<div class="cif"><div style="display:flex;align-items:center;gap:5px"><span class="cn">'+esc(p.name)+'</span><span class="type-pharm">문전약국</span></div><div class="cc">약사: '+esc(p.pharmacist||'-')+' · '+esc(p.vol||'-')+'</div><div class="cc" style="color:var(--blue)">🏥 '+esc(p.linkedHosp||'-')+'</div><div class="cc" style="color:var(--purple)">🏭 '+esc(p.wholesale||'-')+'</div></div><span class="pill bdg '+s[1]+'">'+s[0]+'</span></div>';}).join('');}
+function savePharm(){var name=val('f-pname').trim();if(!name){alert('약국명을 입력해주세요');return;}pharmacies.unshift({id:Date.now(),name:name,av:name[0],pharmacist:val('f-ppharm'),addr:val('f-paddr'),phone:val('f-pphone'),linkedHosp:val('f-phosp'),wholesale:val('f-pwhole'),vol:val('f-pvol')||'중규모',status:val('f-pstat')||'active',note:val('f-pmemo'),stock:'정상'});clearF(['f-pname','f-ppharm','f-paddr','f-pphone','f-phosp','f-pwhole','f-pmemo']);closeM('pm');renderPharm();}
+
+// ═══ WHOLESALER ═══════════════════════════════
+function renderWhole(){var q=(val('wsrch')||'').toLowerCase();var tc={national:'b-navy',regional:'b-purple',specialty:'b-teal'};var tn={national:'전국',regional:'지역',specialty:'전문'};var ac=['#0A1628;#E8A020','#F5EDFF;#7C3AED','#E0F7FA;#0891B2','#EDFBF5;#0F9E6E'];var filtered=wholesalers.filter(function(w){if(F.wtype!=='all'&&w.type!==F.wtype)return false;if(q&&!w.name.includes(q)&&!(w.manager||'').includes(q))return false;return true;});var el=document.getElementById('wholelist');if(!el)return;if(!filtered.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">검색 결과 없음</div>';return;}el.innerHTML=filtered.map(function(w,i){var p=ac[i%ac.length].split(';');var warn=w.stock&&(w.stock.includes('⚠')||w.stock.includes('부족'));return'<div class="ci" onclick="alert(\'[도매상] '+esc(w.name)+'\\n담당: '+esc(w.manager||'-')+'\\n📞 '+esc(w.phone||'-')+'\\n관할: '+esc(w.area||'-')+'\\n약국수: '+esc(w.cnt||'-')+'\\n배송: '+esc(w.delivery||'-')+'\\n재고: '+esc(w.stock||'-')+'\\n메모: '+esc(w.note||'-')+'\')">'+'<div class="av" style="background:'+p[0]+';color:'+p[1]+';border-radius:10px">'+esc(w.av||w.name[0])+'</div>'+'<div class="cif"><div style="display:flex;align-items:center;gap:5px"><span class="cn">'+esc(w.name)+'</span><span class="pill bdg '+(tc[w.type]||'b-navy')+'">'+(tn[w.type]||w.type)+'</span></div><div class="cc">담당: '+esc(w.manager||'-')+' · 배송: '+esc(w.delivery||'-')+'</div><div class="cc">'+esc(w.area||'-')+' · '+esc(w.cnt||'-')+'</div>'+(warn?'<div class="cc" style="color:var(--red);font-weight:700">⚠️ 재고: '+esc(w.stock)+'</div>':'<div class="cc" style="color:var(--green)">✅ 재고: '+esc(w.stock||'정상')+'</div>')+'</div></div>';}).join('');}
+function saveWhole(){var name=val('f-wname').trim();if(!name){alert('도매상명을 입력해주세요');return;}wholesalers.unshift({id:Date.now(),name:name,av:name[0],manager:val('f-wman'),phone:val('f-wphone'),type:val('f-wtype')||'national',area:val('f-warea'),cnt:val('f-wcnt'),prods:val('f-wprod'),delivery:val('f-wdel')||'매일',note:val('f-wmemo'),stock:'정상'});clearF(['f-wname','f-wman','f-wphone','f-warea','f-wcnt','f-wprod','f-wmemo']);closeM('wm');renderWhole();}
+
+// ═══ TASKS ════════════════════════════════════
+function renderTasks(){var pm={high:'ph',med:'pm',low:'pl'};var grps=['오전','오후','완료'];var g={};grps.forEach(function(k){g[k]=[];});tasks.forEach(function(t){g[t.done?'완료':t.grp].push(t);});var el=document.getElementById('tlist');if(!el)return;el.innerHTML=grps.map(function(k){if(!g[k].length)return'';var ico={오전:'⚡',오후:'☀️',완료:'✅'}[k];var lbl={오전:'오전 우선순위',오후:'오후 업무',완료:'완료'}[k];return'<div class="tsec">'+ico+' '+lbl+'</div>'+g[k].map(function(t){return'<div class="ti'+(t.done?' dn':'')+'"><div class="tck'+(t.done?' on':'')+'" onclick="togTask('+t.id+')">'+(t.done?'✓':'')+'</div><div style="flex:1"><div class="ttl"><span class="pd '+(pm[t.p]||'pm')+'"></span>'+esc(t.title)+'</div><div class="tm">'+esc(t.meta)+'</div></div></div>';}).join('');}).join('');}
+function togTask(id){var t=tasks.find(function(x){return x.id===id;});if(t){t.done=!t.done;if(t.done)t.grp='완료';else if(t.grp==='완료')t.grp='오전';}renderTasks();}
+function addTask(){var el=document.getElementById('ti');var v=el?el.value.trim():'';if(!v)return;tasks.unshift({id:ntid++,title:v,done:false,p:'med',grp:'오전',meta:'새로 추가됨'});if(el)el.value='';renderTasks();}
+function toggleVoice(){isRec=!isRec;var btn=document.getElementById('vbtn');var tr=document.getElementById('vtxt');if(!btn)return;if(isRec){btn.classList.add('rec');btn.textContent='🔴 녹음 중... (탭하여 완료';}else{btn.classList.remove('rec');btn.textContent='🎙 음성 메모로 할일 추가';var samples=['한빛약국 로수바스타틴 재고 확인','김재호 원장 다음주 재방문 예약','한국메디팜 긴급 연락'];var s=samples[Math.floor(Math.random()*samples.length)];if(tr){tr.style.display='block';tr.innerHTML='🎙 인식: "'+esc(s)+'" <button style="margin-left:8px;background:var(--blue);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:12px;cursor:pointer" onclick="addVT(\''+s.replace(/'/g,'')+'\')">할일 추가</button>';}}}
+function addVT(t){tasks.unshift({id:ntid++,title:t,done:false,p:'med',grp:'오전',meta:'🎙 음성메모'});var tr=document.getElementById('vtxt');if(tr)tr.style.display='none';renderTasks();}
+
+// ═══ PERFORMANCE ══════════════════════════════
+function renderPerf(){var mx=Math.max.apply(null,PERF.map(function(d){return d.v;}));var el=document.getElementById('pbars');if(el)el.innerHTML=PERF.map(function(d,i){var h=Math.round(d.v/mx*88);var last=i===PERF.length-1;return'<div class="bw"><div class="bv">'+d.v+'</div><div class="bar" style="height:'+h+'px;background:'+(last?'var(--gold)':i>=PERF.length-3?'var(--teal)':'#D1CFC9')+'"></div><div class="bl">'+d.m+'</div></div>';}).join('');var kpi=document.getElementById('kpi');if(kpi)kpi.innerHTML=[{l:'병원·의원 방문',c:110,t:130},{l:'문전약국 확인',c:35,t:50},{l:'도매상 점검',c:8,t:10}].map(function(k){return'<div class="pr"><div class="prt"><span>'+k.l+'</span><span>'+k.c+'/'+k.t+' ('+Math.round(k.c/k.t*100)+'%)</span></div><div class="prb"><div class="prf" style="width:'+Math.round(k.c/k.t*100)+'%;background:var(--gold)"></div></div></div>';}).join('');var bdg=document.getElementById('bdg');if(bdg)bdg.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+BDGS.map(function(b){return'<div style="text-align:center;padding:12px 7px;background:var(--card);border-radius:12px;border:1px solid var(--border);'+(b.on?'':'opacity:.3;filter:grayscale(1)')+'"><div style="font-size:22px">'+b.ic+'</div><div style="font-size:10px;color:var(--muted);margin-top:4px">'+b.nm+'</div></div>';}).join('')+'</div>';}
+
+// ═══ DRUG / NEWS / PUB / TERM / SOC ══════════
+function renderDrug(){var q=(val('dsrch')||'').toLowerCase();var ctbl=document.getElementById('csotbl');if(ctbl)ctbl.innerHTML='<thead><tr><th>제품명(성분)</th><th>할인율</th><th>마진</th><th>비고</th></tr></thead><tbody>'+CSO.map(function(c){return'<tr><td><strong>'+esc(c.prod)+'</strong><br><span style="color:var(--muted);font-size:9px">'+esc(c.gen)+'</span></td><td class="'+(c.disc>=35?'dhi':c.disc>=28?'dmd':'dlo')+'">'+c.disc+'%</td><td style="font-weight:700;color:var(--green)">'+c.margin+'%</td><td style="font-size:10.5px;color:var(--muted)">'+esc(c.note)+'</td></tr>';}).join('')+'</tbody>';var filtered=DRUGS.filter(function(d){if(F.drug!=='all'&&d.cat!==F.drug)return false;if(q&&!d.name.toLowerCase().includes(q)&&!d.full.toLowerCase().includes(q))return false;return true;});var dl=document.getElementById('dlist');if(dl)dl.innerHTML=filtered.map(function(d){return'<div class="dcard"><div class="dhead"><div class="dname">'+esc(d.name)+'</div><div class="dgen">'+esc(d.full)+'</div><div class="dtags">'+d.tags.map(function(t){return'<span class="dtag">'+esc(t)+'</span>';}).join('')+'</div></div><div class="dbody">'+d.rows.map(function(r){return'<div class="drow"><span class="dlbl">'+esc(r.l)+'</span><span class="dval'+(r.c?' '+r.c:'')+'">'+esc(r.v)+'</span></div>';}).join('')+'</div></div>';}).join('');}
+function renderNews(){var filtered=NEWS_DATA.filter(function(n){return F.news==='all'||n.type===F.news;});var el=document.getElementById('nlist');if(el)el.innerHTML=filtered.map(function(n){return'<div class="ni"><span class="pill bdg '+n.cls+'" style="margin-top:2px;flex-shrink:0">'+esc(n.cat)+'</span><div><div class="ntitle">'+esc(n.t)+'</div><div style="font-size:11.5px;color:var(--muted);margin-top:1px">'+esc(n.sub)+'</div><div class="ndate">'+n.d+'</div></div></div>';}).join('');}
+function renderPub(){var q=(val('pubsrch')||'').toLowerCase();var filtered=PUBS.filter(function(p){if(F.pub!=='all'&&p.type!==F.pub)return false;if(q&&!p.t.toLowerCase().includes(q)&&!p.tags.join(' ').toLowerCase().includes(q))return false;return true;});var el=document.getElementById('plist');if(el)el.innerHTML=filtered.map(function(p){return'<div class="pub"><div class="pub-t">'+esc(p.t)+'</div><div class="pub-m"><span class="pub-id" onclick="window.open(\'https://pubmed.ncbi.nlm.nih.gov/'+p.id+'\',\'_blank\')">PMID: '+p.id+'</span><span>'+esc(p.j)+'</span><span>'+p.y+'</span><span class="bdg b-blue">'+p.type.toUpperCase()+'</span></div><div class="pub-a">'+esc(p.a)+'</div><div class="pub-tags">'+p.tags.map(function(t){return'<span class="ptag">'+esc(t)+'</span>';}).join('')+'</div></div>';}).join('');}
+function renderTerms(){var q=(val('tsrch')||'').toLowerCase();var cc={lab:'b-green',cv:'b-red',dm:'b-blue',trial:'b-purple',reg:'b-gold',pharma:'b-teal'};var cn={lab:'검사',cv:'심혈관',dm:'당뇨',trial:'임상',reg:'규제',pharma:'약리'};var filtered=TERMS.filter(function(t){if(F.term!=='all'&&t.cat!==F.term)return false;if(q&&!t.abbr.toLowerCase().includes(q)&&!t.full.toLowerCase().includes(q)&&!t.ko.includes(q))return false;return true;});var el=document.getElementById('termlist');if(!el)return;el.innerHTML=filtered.map(function(t,i){return'<div class="term-item" id="tr'+i+'" onclick="document.getElementById(\'tr'+i+'\').classList.toggle(\'open\')"><div class="term-top"><div><div class="term-abbr">'+esc(t.abbr)+'</div><div class="term-full">'+esc(t.full)+'</div></div><span class="bdg '+(cc[t.cat]||'b-blue')+'">'+(cn[t.cat]||t.cat)+'</span></div><div class="term-ko">'+esc(t.ko)+'</div><div class="term-body">'+esc(t.def)+'</div></div>';}).join('')||'<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">검색 결과 없음</div>';}
+function renderSoc(){var q=(val('socsrch')||'').toLowerCase();var filtered=SOCS.filter(function(s){if(F.soc!=='all'&&s.cat!==F.soc)return false;if(q&&!s.name.includes(q)&&!s.full.toLowerCase().includes(q))return false;return true;});var el=document.getElementById('soclist');if(!el)return;el.innerHTML=filtered.map(function(s,i){return'<div class="soc-item" id="sc'+i+'"><div class="soc-head" onclick="togSoc(\'sc'+i+'\')"><div class="soc-icon" style="background:'+s.color+'">'+s.ic+'</div><div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--navy)">'+esc(s.name)+'</div><div style="font-size:11px;color:var(--muted)">'+esc(s.full)+'</div></div><span style="color:var(--muted);font-size:14px" id="sc'+i+'arr">▾</span></div><div class="soc-body">'+s.confs.map(function(c){return'<div class="conf-item"><div><div style="font-size:13px;font-weight:600">'+esc(c.name)+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">📍 '+esc(c.loc)+'</div></div><div style="text-align:right"><div style="font-size:11.5px;color:var(--blue);font-weight:600">'+c.date+'</div><div style="font-size:10.5px;color:'+(c.note.includes('D-')?'var(--red)':c.note.includes('종료')?'var(--muted)':'var(--green)')+'">'+esc(c.note)+'</div></div></div>';}).join('')+'<button class="btn-out" style="width:100%;margin-top:10px;font-size:12px" onclick="window.open(\''+s.url+'\',\'_blank\')">🔗 공식 홈페이지</button></div></div>';}).join('');}
+function togSoc(id){var el=document.getElementById(id);if(!el)return;el.classList.toggle('open');var a=document.getElementById(id+'arr');if(a)a.textContent=el.classList.contains('open')?'▴':'▾';}
+
+// ═══ GROWTH ═══════════════════════════════════
+function renderGrowth(){var m=document.getElementById('mentor');if(m)m.textContent=MENTORS[Math.floor(Math.random()*MENTORS.length)];var tips=document.getElementById('tips');if(tips)tips.innerHTML=TIPS.map(function(t){return'<div class="tip"><div class="tcat">'+esc(t.cat)+'</div><div class="ttitle">'+esc(t.title)+'</div><div class="tbody">'+esc(t.body)+'</div></div>';}).join('');var rout=document.getElementById('rout');if(rout)rout.innerHTML=ROUTS.map(function(r){return'<div class="rout"><span class="rtm">'+r.tm+'</span><span style="font-size:16px">'+r.ic+'</span><span class="rtxt">'+esc(r.tx)+'</span></div>';}).join('');calcSim();}
+function calcSim(){var qty=parseInt((document.getElementById('simQty')||{value:200}).value)||200;var price=parseInt((document.getElementById('simPrice')||{value:800}).value)||800;var margin=parseInt((document.getElementById('simMargin')||{value:20}).value)||20;var annual=qty*price*12*(margin/100);var r=document.getElementById('simResult');var d=document.getElementById('simDetail');if(r)r.textContent='₩'+annual.toLocaleString();if(d)d.textContent='월 '+qty+'정 × ₩'+price.toLocaleString()+' × 마진 '+margin+'% × 12개월';}
+
+// ═══ MISC ═════════════════════════════════════
+function renderSched(){var items=[{t:'09:30',txt:'한빛내과의원 — 로수바스타틴 데이터',type:'clinic'},{t:'10:00',txt:'한빛약국 — 재고 확인 및 발주',type:'pharm'},{t:'11:00',txt:'한국메디팜 — 긴급 재고 점검',type:'whole'},{t:'14:00',txt:'서울대병원 이민정 원장 — 당뇨 미팅',type:'hosp'},{t:'17:00',txt:'도매 팔로업 & 보고서 제출',type:'task'}];var cc={clinic:'type-clinic',hosp:'type-hosp',pharm:'type-pharm',whole:'type-whole',task:'b-gold'};var cn={clinic:'의원',hosp:'병원',pharm:'약국',whole:'도매',task:'업무'};var el=document.getElementById('sched');if(el)el.innerHTML=items.map(function(i){return'<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;font-weight:700;color:var(--navy);min-width:42px">'+i.t+'</span><span class="pill bdg '+(cc[i.type]||'b-navy')+'">'+(cn[i.type]||i.type)+'</span><span style="font-size:12.5px;flex:1">'+esc(i.txt)+'</span></div>';}).join('');}
+function showMap(){var items=custs.filter(function(c){return c.status==='hot'||c.status==='warm';}).slice(0,3).concat(pharmacies.slice(0,2));var el=document.getElementById('map-list');if(el)el.innerHTML=items.map(function(x){var type=x.pharmacist?'pharm':(x.type||'clinic');var cc2={clinic:'type-clinic',hosp:'type-hosp',pharm:'type-pharm'};var cn2={clinic:'의원',hosp:'병원',pharm:'약국'};return'<div style="padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px;display:flex;gap:9px;align-items:center"><span class="pill '+(cc2[type]||'type-clinic')+'">'+(cn2[type]||type)+'</span><span style="flex:1;font-weight:600">'+(x.hosp||x.name||'')+'</span><span style="color:var(--muted);font-size:11px">'+(x.addr||'')+'</span></div>';}).join('');openM('mapm');}
+function loadSampleClinCal(){var clinics=custs.filter(function(c){return c.type==='clinic';});if(!clinics.length||clinicCals.length)return;var samples=[{idx:0,slots:{월:['09:00-10:00','10:00-11:00'],화:[],수:['14:00-15:00','15:00-16:00'],목:['09:00-10:00'],금:[],토:['10:00-11:00']}},{idx:1,slots:{월:['14:00-15:00'],화:['09:00-10:00','10:00-11:00'],수:[],목:['14:00-15:00','15:00-16:00'],금:['10:00-11:00'],토:[]}},{idx:2,slots:{월:[],화:['14:00-15:00'],수:['09:00-10:00'],목:[],금:['14:00-15:00','15:00-16:00'],토:[]}}];samples.forEach(function(s){if(clinics[s.idx])clinicCals.push({id:Date.now()+s.idx,clinicId:clinics[s.idx].id,slots:s.slots,memo:'샘플 데이터'});});renderClinicCal();renderWeekTable();}
+
+// ═══ INIT ═════════════════════════════════════
+function init(){
+  var now=new Date();
+  var days=['일','월','화','수','목','금','토'];
+  var hd=document.getElementById('hd');
+  if(hd)hd.textContent=(now.getMonth()+1)+'/'+(now.getDate())+'('+days[now.getDay()]+')';
+  var dq=document.getElementById('dq');
+  if(dq)dq.textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  toggleHospFields();
+  updateHospSel();
+  updateClinicSel();
+  renderCust();renderPharm();renderWhole();renderTasks();renderPerf();
+  renderDrug();renderNews();renderPub();renderTerms();renderSoc();renderGrowth();renderSched();
+  renderWeekTable();renderClinicCal();
+  renderMoTabs();
+  loadSampleClinCal();
+  document.querySelectorAll('.mbk').forEach(function(m){m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});});
+  // 키보드 엔터 이벤트
+  var ti=document.getElementById('ti');
+  if(ti)ti.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addTask();}});
+}
+window.addEventListener('load',init);
+
+// ═══ 실적 분석 JS ═══════════════════════════════════
+var monthlyData={},curMonth=null,analysisMode='month';
+var MONTHS_ORDER=['25년 1월','25년 2월','25년 3월','25년 4월','25년 5월','25년 6월','25년 7월','25년 8월','25년 9월','25년 10월','25년 11월','25년 12월','26년 1월','26년 2월','26년 3월'];
+function esc2(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtN(n){return Math.round(n||0).toLocaleString();}
+function fmtAmt(n){n=n||0;if(n>=100000000)return(n/100000000).toFixed(1)+'억';if(n>=10000)return Math.round(n/10000)+'만';return Math.round(n).toLocaleString();}
+function fmtAmt2(n){n=n||0;if(n>=10000000)return Math.round(n/10000000)+'천만';if(n>=10000)return Math.round(n/10000)+'만';return Math.round(n).toLocaleString();}
+
+function renderMoTabs(){
+  var el=document.getElementById('mo-tabs');if(!el)return;
+  if(!curMonth)curMonth=MONTHS_ORDER[0];
+  el.innerHTML=MONTHS_ORDER.map(function(m){
+    var has=!!monthlyData[m];var on=m===curMonth;
+    var bg=on&&has?'var(--green)':on?'var(--navy)':has?'rgba(15,158,110,.08)':'var(--card)';
+    var col=on&&has?'#fff':on?'var(--gold)':has?'var(--green)':'var(--muted)';
+    var bc=has?'var(--green)':'var(--border)';
+    return'<button style="flex-shrink:0;padding:6px 11px;border-radius:20px;border:1.5px solid '+bc+';background:'+bg+';font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:'+col+';white-space:nowrap" onclick="selectMo(\''+m+'\')">'+m+(has?' ✓':'')+'</button>';
+  }).join('');
+  var uploaded=MONTHS_ORDER.filter(function(m){return!!monthlyData[m];});
+  var af=document.getElementById('accum-from');var at=document.getElementById('accum-to');
+  if(af)af.innerHTML=uploaded.map(function(m){return'<option>'+m+'</option>';}).join('');
+  if(at){at.innerHTML=uploaded.map(function(m){return'<option>'+m+'</option>';}).join('');if(at.options.length>0)at.selectedIndex=at.options.length-1;}
+}
+function selectMo(m){
+  curMonth=m;renderMoTabs();
+  if(analysisMode==='month'&&monthlyData[m])renderAnalysis(monthlyData[m],[m]);
+  else document.getElementById('excel-result').style.display='none';
+}
+function setAMode(mode,el){
+  analysisMode=mode;
+  var mb=document.getElementById('am-month');var ab=document.getElementById('am-accum');
+  if(mb){mb.style.background='var(--card)';mb.style.color='var(--muted)';mb.style.borderColor='var(--border)';}
+  if(ab){ab.style.background='var(--card)';ab.style.color='var(--muted)';ab.style.borderColor='var(--border)';}
+  el.style.background='var(--navy)';el.style.color='var(--gold)';el.style.borderColor='var(--navy)';
+  document.getElementById('accum-wrap').style.display=mode==='accum'?'block':'none';
+  if(mode==='accum')renderAccum();
+  else if(monthlyData[curMonth])renderAnalysis(monthlyData[curMonth],[curMonth]);
+  else document.getElementById('excel-result').style.display='none';
+}
+function renderAccum(){
+  var af=document.getElementById('accum-from');var at=document.getElementById('accum-to');
+  if(!af||!at)return;
+  var from=af.value,to=at.value;if(!from||!to)return;
+  var fi=MONTHS_ORDER.indexOf(from),ti=MONTHS_ORDER.indexOf(to);
+  if(fi>ti){var tmp=fi;fi=ti;ti=tmp;}
+  var periods=MONTHS_ORDER.slice(fi,ti+1).filter(function(m){return!!monthlyData[m];});
+  if(!periods.length){document.getElementById('excel-result').style.display='none';return;}
+  var merged=[];periods.forEach(function(m){merged=merged.concat(monthlyData[m]);});
+  renderAnalysis(merged,periods);
+}
+function onExDrag(e,over){e.preventDefault();var dz=document.getElementById('excel-dz');if(dz)dz.style.borderColor=over?'var(--navy)':'var(--border)';}
+function onExDrop(e){e.preventDefault();var dz=document.getElementById('excel-dz');if(dz)dz.style.borderColor='var(--border)';var f=e.dataTransfer.files[0];if(f)parseExFile(f);}
+function onExSelect(e){var f=e.target.files[0];if(f)parseExFile(f);}
+function parseExFile(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var text=e.target.result;
+    var rows=text.trim().split(/\r?\n/);
+    var records=[];
+    var startIdx=0;
+    var firstVal=((rows[0]||'').split(/[,\t]/)[0]||'').replace(/^"|"$/g,'').trim();
+    if(isNaN(parseFloat(firstVal)))startIdx=1;
+    rows.slice(startIdx).forEach(function(row){
+      if(!row.trim())return;
+      var cols=row.split(/[,\t]/);
+      if(cols.length<31)return;
+      var g=function(i){return(cols[i]||'').replace(/^"|"$/g,'').trim();};
+      var qty=parseFloat(g(28).replace(/,/g,''))||0;
+      var amt=parseFloat(g(30).replace(/,/g,''))||0;
+      if(!amt&&!qty)return;
+      records.push({yr:g(1),mo:g(2),wholesale:g(5)||'미분류',hosp:g(11)||'미분류',pharmacy:g(12)||'미분류',custType:g(13)||'',sido:g(16)||'',gugun:g(17)||'',product:g(25)||'미분류',qty:qty,amount:amt});
+    });
+    if(!records.length){alert('⚠️ 데이터를 읽을 수 없습니다.\n\n• 엑셀 → 다른이름으로저장 → CSV(쉼표로분리) 변환 필요\n• 회사 실적 파일 구조(34컬럼)여야 합니다');return;}
+    var yr=records[0].yr||'';var mo=records[0].mo||'';
+    var det=yr+' '+mo;
+    if(MONTHS_ORDER.indexOf(det)===-1)MONTHS_ORDER.push(det);
+    monthlyData[det]=records;curMonth=det;
+    renderMoTabs();
+    renderAnalysis(records,[det]);
+    var total=records.reduce(function(s,r){return s+r.amount;},0);
+    alert('✅ '+records.length+'건 분석 완료!\n기간: '+det+'\n총 처방액: '+fmtAmt(total));
+  };
+  reader.onerror=function(){alert('파일 읽기 오류가 발생했습니다.');};
+  reader.readAsText(file,'UTF-8');
+}
+function groupByKey(records,key,limit){
+  var map={};
+  records.forEach(function(r){var k=r[key]||'미분류';if(!map[k])map[k]={qty:0,amount:0};map[k].qty+=r.qty;map[k].amount+=r.amount;});
+  return Object.entries(map).sort(function(a,b){return b[1].amount-a[1].amount;}).slice(0,limit||10);
+}
+function renderAnalysis(records,periods){
+  var totalAmt=records.reduce(function(s,r){return s+r.amount;},0);
+  var totalQty=records.reduce(function(s,r){return s+r.qty;},0);
+  var uniqueH=new Set(records.map(function(r){return r.hosp;})).size;
+  var uniqueP=new Set(records.map(function(r){return r.product;})).size;
+  var isAccum=periods&&periods.length>1;
+  var lbl=document.getElementById('analysis-lbl');
+  if(lbl)lbl.textContent=(isAccum?'📈 누계: '+periods[0]+' ~ '+periods[periods.length-1]:'📅 '+(periods[0]||curMonth||''));
+  var sum=document.getElementById('analysis-summary');
+  if(sum)sum.innerHTML='<div class="sbox"><div class="sv2">'+fmtAmt(totalAmt)+'</div><div class="sl">총 처방액</div></div><div class="sbox"><div class="sv2">'+fmtN(totalQty)+'</div><div class="sl">총 수량</div></div><div class="sbox"><div class="sv2">'+uniqueH+'</div><div class="sl">병원 수</div></div><div class="sbox"><div class="sv2">'+uniqueP+'</div><div class="sl">품목 수</div></div>';
+  renderRankT('r-wholesale',groupByKey(records,'wholesale',10),totalAmt,'도매상');
+  renderRankT('r-hosp',groupByKey(records,'hosp',10),totalAmt,'병원');
+  renderRankT('r-pharm',groupByKey(records,'pharmacy',10),totalAmt,'문전약국');
+  renderRankT('r-product',groupByKey(records,'product',10),totalAmt,'품목');
+  renderTrendC(records);
+  var cmc=document.getElementById('monthly-comp-card');
+  if(isAccum&&cmc){cmc.style.display='block';renderMonthC(periods);}else if(cmc)cmc.style.display='none';
+  document.getElementById('excel-result').style.display='block';
+}
+function renderRankT(elId,data,total,lbl){
+  var el=document.getElementById(elId);if(!el)return;
+  var thStyle='padding:7px 8px;color:rgba(255,255,255,.65);font-size:9px;text-transform:uppercase;font-weight:600;text-align:left;background:var(--navy)';
+  el.innerHTML='<thead><tr><th style="'+thStyle+';border-radius:8px 0 0 0">#</th><th style="'+thStyle+'">'+lbl+'</th><th style="'+thStyle+'">처방액</th><th style="'+thStyle+';border-radius:0 8px 0 0">비율</th></tr></thead><tbody>'+data.map(function(d,i){var pct=total>0?Math.round(d[1].amount/total*100):0;return'<tr><td style="padding:8px;border-bottom:1px solid var(--border);font-weight:900;color:var(--muted);font-size:12px">'+(i+1)+'</td><td style="padding:8px;border-bottom:1px solid var(--border);font-size:11.5px;font-weight:600">'+esc2(d[0])+'<div style="background:#EEECEA;border-radius:3px;height:4px;margin-top:3px;overflow:hidden"><div style="height:100%;border-radius:3px;background:var(--gold);width:'+pct+'%"></div></div></td><td style="padding:8px;border-bottom:1px solid var(--border);font-size:11.5px;font-weight:700;color:var(--navy)">'+fmtAmt(d[1].amount)+'</td><td style="padding:8px;border-bottom:1px solid var(--border);font-size:10.5px;color:var(--muted)">'+pct+'%</td></tr>';}).join('')+'</tbody>';
+}
+function renderTrendC(records){
+  var prods=groupByKey(records,'product',6);var mx=prods.reduce(function(m,p){return Math.max(m,p[1].amount);},0);
+  var el=document.getElementById('trend-chart');if(!el)return;
+  var colors=['var(--gold)','var(--teal)','var(--blue)','var(--green)','var(--purple)','var(--orange)'];
+  el.innerHTML=prods.map(function(p,i){var h=mx>0?Math.round(p[1].amount/mx*85):0;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%"><div style="font-size:8.5px;font-weight:700;color:var(--navy)">'+fmtAmt2(p[1].amount)+'</div><div style="width:100%;border-radius:3px 3px 0 0;min-height:2px;height:'+h+'px;background:'+colors[i%colors.length]+'"></div><div style="font-size:8px;color:var(--muted)">'+esc2(p[0].substring(0,6))+'</div></div>';}).join('');
+}
+function renderMonthC(periods){
+  var el=document.getElementById('monthly-comp-chart');if(!el)return;
+  var amts=periods.map(function(m){return{m:m,v:(monthlyData[m]||[]).reduce(function(s,r){return s+r.amount;},0)};});
+  var mx=Math.max.apply(null,amts.map(function(a){return a.v;}).concat([1]));
+  el.innerHTML=amts.map(function(a,i){var h=mx>0?Math.round(a.v/mx*85):0;var last=i===amts.length-1;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%"><div style="font-size:8.5px;font-weight:700;color:var(--navy)">'+fmtAmt2(a.v)+'</div><div style="width:100%;border-radius:3px 3px 0 0;min-height:2px;height:'+h+'px;background:'+(last?'var(--gold)':'var(--teal)')+'"></div><div style="font-size:8px;color:var(--muted)">'+a.m.slice(3)+'</div></div>';}).join('');
+}
+function exportReport(){
+  var records=analysisMode==='month'?monthlyData[curMonth]:null;
+  if(!records){alert('분석할 데이터가 없습니다.\n파일을 먼저 업로드해주세요.');return;}
+  var total=records.reduce(function(s,r){return s+r.amount;},0);
+  var txt='[PHARMA PRO 실적 보고서]\n기간: '+curMonth+'\n총 처방액: '+fmtAmt(total)+'\n\n';
+  txt+='=== 도매상별 TOP 5 ===\n';groupByKey(records,'wholesale',5).forEach(function(d,i){txt+=(i+1)+'. '+d[0]+': '+fmtAmt(d[1].amount)+'\n';});
+  txt+='\n=== 병원별 TOP 5 ===\n';groupByKey(records,'hosp',5).forEach(function(d,i){txt+=(i+1)+'. '+d[0]+': '+fmtAmt(d[1].amount)+'\n';});
+  txt+='\n=== 문전약국별 TOP 5 ===\n';groupByKey(records,'pharmacy',5).forEach(function(d,i){txt+=(i+1)+'. '+d[0]+': '+fmtAmt(d[1].amount)+'\n';});
+  txt+='\n=== 품목별 TOP 5 ===\n';groupByKey(records,'product',5).forEach(function(d,i){txt+=(i+1)+'. '+d[0]+': '+fmtAmt(d[1].amount)+'\n';});
+  var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+  alert('📋 보고서가 클립보드에 복사되었습니다!\n카카오톡에 붙여넣기로 공유하세요.');
+}
+function shareKakaoReport(){exportReport();}
+
+// ═══════════════════════════════════════════════════
+// 심평원 공공데이터 API 연동
+// ═══════════════════════════════════════════════════
+var HIRA_KEY = "85551d6403c51e3ccab21bf57f2bbb6a4c02524c1e0997ddc0d6f87b50236a4b";
+var HIRA_BASE = "http://apis.data.go.kr";
+var _hospItems = [], _pharmItems = [];
+
+// fetch 공통 - CORS 문제시 안내
+function hiraFetch(url, cb){
+  fetch(url)
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      try {
+        var data = JSON.parse(txt);
+        var items = data.response && data.response.body && data.response.body.items && data.response.body.items.item;
+        if(!items) items = [];
+        if(!Array.isArray(items)) items = [items];
+        cb(null, items);
+      } catch(e) {
+        // XML 응답 파싱
+        var matches = txt.match(/<item>([\s\S]*?)<\/item>/g) || [];
+        var parsed = matches.map(function(m){
+          var get = function(tag){ var r = m.match(new RegExp('<'+tag+'>([^<]*)<\/'+tag+'>')); return r ? r[1] : ''; };
+          return { yadmNm: get('yadmNm'), addr: get('addr'), drTotCnt: get('drTotCnt'), clCdNm: get('clCdNm'), telno: get('telno'), cpntNm: get('cpntNm'), cpntNmEn: get('cpntNmEn') };
+        });
+        cb(null, parsed);
+      }
+    })
+    .catch(function(e){ cb(e, []); });
+}
+
+// ① 병원 검색
+function hospAPISearch(){
+  var inp = document.getElementById('f-chosp');
+  var kw = inp ? inp.value.trim() : '';
+  if(kw.length < 2){ alert('병원명을 2글자 이상 입력하세요'); return; }
+  var btn = document.getElementById('hosp-search-btn');
+  if(btn){ btn.textContent='검색중...'; btn.disabled=true; }
+  var url = HIRA_BASE + "/B551182/hospInfoServicev2/getHospBasisList?serviceKey=" + HIRA_KEY + "&pageNo=1&numOfRows=10&yadmNm=" + encodeURIComponent(kw) + "&output=json";
+  hiraFetch(url, function(err, items){
+    if(btn){ btn.textContent='🔍 심평원 자동검색'; btn.disabled=false; }
+    if(err || !items.length){ alert('검색 결과 없음
+직접 입력해주세요'); return; }
+    _hospItems = items;
+    showSearchPopup('hosp-pop', '병원 선택', items, function(h){
+      var fn=document.getElementById('f-chosp'); if(fn) fn.value=h.yadmNm||'';
+      var fa=document.getElementById('f-caddr'); if(fa) fa.value=h.addr||'';
+      var fb=document.getElementById('f-cbed'); if(fb) fb.value=h.drTotCnt||'';
+      var fg=document.getElementById('f-cgrade');
+      if(fg && h.clCdNm){
+        for(var o=0;o<fg.options.length;o++){
+          if(fg.options[o].text.indexOf(h.clCdNm.replace('상급종합','상급종합병원'))>-1){ fg.selectedIndex=o; break; }
+        }
+      }
+    });
+  });
+}
+
+// ② 약국 검색
+function pharmAPISearch(){
+  var inp = document.getElementById('f-pname');
+  var kw = inp ? inp.value.trim() : '';
+  if(kw.length < 2){ alert('약국명을 2글자 이상 입력하세요'); return; }
+  var btn = document.getElementById('pharm-search-btn');
+  if(btn){ btn.textContent='검색중...'; btn.disabled=true; }
+  var url = HIRA_BASE + "/B551182/pharmacyInfoService/getParmacyBasisList?serviceKey=" + HIRA_KEY + "&pageNo=1&numOfRows=10&yadmNm=" + encodeURIComponent(kw) + "&output=json";
+  hiraFetch(url, function(err, items){
+    if(btn){ btn.textContent='🔍 심평원 자동검색'; btn.disabled=false; }
+    if(err || !items.length){ alert('검색 결과 없음
+직접 입력해주세요'); return; }
+    _pharmItems = items;
+    showSearchPopup('pharm-pop', '약국 선택', items, function(h){
+      var fn=document.getElementById('f-pname'); if(fn) fn.value=h.yadmNm||'';
+      var fa=document.getElementById('f-paddr'); if(fa) fa.value=h.addr||'';
+      var fp=document.getElementById('f-pphone'); if(fp) fp.value=h.telno||'';
+    });
+  });
+}
+
+// ③ 성분 검색
+function drugCompAPISearch(){
+  var inp = document.getElementById('hira-drug-kw');
+  var kw = inp ? inp.value.trim() : '';
+  if(kw.length < 2){ alert('성분명을 2글자 이상 입력하세요'); return; }
+  var btn = document.getElementById('hira-drug-btn');
+  if(btn){ btn.textContent='검색중...'; btn.disabled=true; }
+  var url = HIRA_BASE + "/B551182/MedicineIngredientInfoService/getMultiCompoundMedicineIngredientInfo?serviceKey=" + HIRA_KEY + "&pageNo=1&numOfRows=10&cpntNm=" + encodeURIComponent(kw) + "&output=json";
+  hiraFetch(url, function(err, items){
+    if(btn){ btn.textContent='🔍 검색'; btn.disabled=false; }
+    var el = document.getElementById('hira-drug-result');
+    if(!el) return;
+    if(err || !items.length){
+      el.innerHTML = '<div style="color:rgba(255,255,255,.5);font-size:12px;padding:8px 0">검색 결과 없음</div>';
+      return;
+    }
+    el.innerHTML = items.slice(0,5).map(function(d){
+      return '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1)">'
+        + '<div style="font-size:12.5px;font-weight:700;color:#fff">' + (d.cpntNm||d.itemName||'') + '</div>'
+        + '<div style="font-size:10.5px;color:rgba(255,255,255,.5);margin-top:2px">' + (d.cpntNmEn||'') + '</div>'
+        + '</div>';
+    }).join('');
+  });
+}
+
+// 공통 검색 팝업 (따옴표 충돌 없는 DOM 방식)
+function showSearchPopup(popId, title, items, onSelect){
+  var existing = document.getElementById(popId);
+  if(existing) existing.remove();
+
+  var overlay = document.createElement('div');
+  overlay.id = popId;
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:600;display:flex;align-items:flex-end;justify-content:center';
+
+  var sheet = document.createElement('div');
+  sheet.style.cssText = 'background:var(--card);border-radius:18px 18px 0 0;width:100%;max-width:480px;max-height:65vh;overflow-y:auto';
+
+  var hdr = document.createElement('div');
+  hdr.style.cssText = 'padding:14px 14px 10px;font-size:14px;font-weight:900;color:var(--navy);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--card)';
+  hdr.textContent = title;
+
+  var closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--muted);padding:0 4px';
+  closeBtn.onclick = function(){ overlay.remove(); };
+  hdr.appendChild(closeBtn);
+  sheet.appendChild(hdr);
+
+  items.slice(0,8).forEach(function(h, i){
+    var row = document.createElement('div');
+    row.style.cssText = 'padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer';
+    row.innerHTML = '<div style="font-size:13px;font-weight:700;color:var(--navy)">' + (h.yadmNm||h.cpntNm||'') + '</div>'
+      + '<div style="font-size:10.5px;color:var(--muted);margin-top:2px">' + ((h.addr||'').substring(0,30)) + (h.clCdNm?' · '+h.clCdNm:'') + '</div>';
+    row.onmouseover = function(){ this.style.background='var(--bg)'; };
+    row.onmouseout = function(){ this.style.background=''; };
+    row.onclick = function(){
+      onSelect(h);
+      overlay.remove();
+    };
+    sheet.appendChild(row);
+  });
+
+  overlay.appendChild(sheet);
+  document.body.appendChild(overlay);
+  overlay.onclick = function(e){ if(e.target === overlay) overlay.remove(); };
+}
+
+</script>
+</body>
+</html>
