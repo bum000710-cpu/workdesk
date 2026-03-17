@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PHARMA PRO Lite</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;--card:#ffffff;--ink:#112;--muted:#667;
+      --brand:#006f8e;--accent:#1f9d55;--warn:#d97706;--line:#dbe3ec;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 "Segoe UI",Apple SD Gothic Neo,sans-serif}
+    .wrap{max-width:980px;margin:0 auto;padding:12px 12px 84px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+    h1,h2,h3{margin:0 0 8px}
+    h1{font-size:18px} h2{font-size:16px} h3{font-size:14px}
+    .row{display:grid;gap:8px}
+    .row2{grid-template-columns:1fr 1fr}
+    .row3{grid-template-columns:1fr 1fr 1fr}
+    @media (max-width:760px){.row2,.row3{grid-template-columns:1fr}}
+    input,select,button,textarea{font:inherit}
+    input,select,textarea{width:100%;padding:9px;border:1px solid #bfcddd;border-radius:8px;background:#fff}
+    button{border:0;border-radius:8px;padding:9px 10px;background:var(--brand);color:#fff;cursor:pointer}
+    button.secondary{background:#6b7280} button.green{background:var(--accent)} button.warn{background:var(--warn)}
+    .muted{color:var(--muted);font-size:13px}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#e9f3f7;color:#055}
+    .list{display:grid;gap:8px}
+    .item{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+    .hide{display:none!important}
+    .tabs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:15}
+    .tab{padding:10px 4px;text-align:center;font-size:12px;color:#334}
+    .tab.active{color:var(--brand);font-weight:700}
+    .pin-backdrop{position:fixed;inset:0;background:#071724e6;display:flex;align-items:center;justify-content:center;z-index:30}
+    .pin-box{width:min(440px,94vw);background:#fff;border-radius:14px;padding:14px}
+    .kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .kpi div{background:#edf8fb;border:1px solid #c9e4ec;border-radius:10px;padding:10px}
+  </style>
+</head>
+<body>
+  <div id="pinLayer" class="pin-backdrop">
+    <div class="pin-box">
+      <h2 id="pinTitle">PIN 설정</h2>
+      <p class="muted" id="pinDesc">처음 사용입니다. 4자리 PIN을 설정하세요.</p>
+      <div class="row">
+        <input id="pinInput" type="password" maxlength="4" inputmode="numeric" placeholder="PIN 4자리">
+        <input id="pinConfirm" type="password" maxlength="4" inputmode="numeric" placeholder="PIN 확인">
+        <button id="pinSubmit">확인</button>
+        <button id="pinReset" class="warn">PIN 초기화</button>
+        <div id="pinMsg" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section id="home" class="page">
+      <div class="card">
+        <h1>PHARMA PRO</h1>
+        <p class="muted">간편하고 심플하게, 데이터는 깊게.</p>
+      </div>
+      <div class="card">
+        <h2>오늘 요약</h2>
+        <div class="kpi">
+          <div><b id="kVisit">0</b><br><span class="muted">방문 예정</span></div>
+          <div><b id="kTodo">0</b><br><span class="muted">오늘 할일</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>빠른 실행</h2>
+        <div class="row row2">
+          <button data-go="tasks">할일 추가/수정</button>
+          <button data-go="accounts" class="green">거래처 등록</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="tasks" class="page hide">
+      <div class="card">
+        <h2>할일 & 목표</h2>
+        <div class="row row3">
+          <input id="todoText" placeholder="오늘 할일">
+          <select id="todoPri">
+            <option value="high">중요</option>
+            <option value="mid">보통</option>
+            <option value="low">낮음</option>
+          </select>
+          <button id="addTodo">추가</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row row3">
+          <div><h3>일 목표</h3><input id="goalDay" placeholder="예: 방문 6건"></div>
+          <div><h3>주간 목표</h3><input id="goalWeek" placeholder="예: 신규 4처"></div>
+          <div><h3>월간 목표</h3><input id="goalMonth" placeholder="예: 처방액 1.2억"></div>
+        </div>
+        <div style="margin-top:8px"><button id="saveGoals">목표 저장</button></div>
+      </div>
+      <div class="card"><h3>오늘 할일</h3><div id="todoList" class="list"></div></div>
+    </section>
+
+    <section id="accounts" class="page hide">
+      <div class="card">
+        <h2>거래처 통합 (병원/의원/약국/도매)</h2>
+        <div class="row row3">
+          <select id="accType">
+            <option>병원</option><option>의원</option><option>약국</option><option>도매상</option>
+          </select>
+          <input id="accName" placeholder="거래처명">
+          <input id="accArea" placeholder="지역(동/구)">
+        </div>
+        <div class="row row3" style="margin-top:8px">
+          <input id="accContact" placeholder="담당자/원장/약사명">
+          <select id="accRole">
+            <option value="">직급/역할</option>
+          </select>
+          <input id="accNote" placeholder="메모">
+        </div>
+        <div style="margin-top:8px"><button id="addAcc">등록</button></div>
+      </div>
+      <div class="card">
+        <div class="row row2">
+          <select id="fType"><option value="">전체유형</option><option>병원</option><option>의원</option><option>약국</option><option>도매상</option></select>
+          <input id="fKeyword" placeholder="검색 (거래처/담당자/지역)">
+        </div>
+      </div>
+      <div id="accList" class="list"></div>
+    </section>
+
+    <section id="results" class="page hide">
+      <div class="card">
+        <h2>실적 업로드 (CSV)</h2>
+        <p class="muted">회사별 포맷 차이를 위해 컬럼 매핑 저장을 지원합니다.</p>
+        <input id="csvFile" type="file" accept=".csv,text/csv">
+        <div class="row row3" style="margin-top:8px">
+          <input id="mapWh" placeholder="도매상 컬럼명 (예: 자료제공처명)">
+          <input id="mapHos" placeholder="병원/의원 컬럼명 (예: 거래처코드명)">
+          <input id="mapPh" placeholder="약국 컬럼명 (예: 거래처명)">
+        </div>
+        <div class="row row3" style="margin-top:8px">
+          <input id="mapProd" placeholder="품목 컬럼명 (예: 품목명)">
+          <input id="mapQty" placeholder="수량 컬럼명 (예: 수량)">
+          <input id="mapAmt" placeholder="금액 컬럼명 (예: 처방액)">
+        </div>
+        <div style="margin-top:8px">
+          <button id="saveMap" class="secondary">매핑 저장</button>
+          <button id="runCsv">분석 실행</button>
+        </div>
+      </div>
+      <div class="card"><h3>분석 요약</h3><div id="csvOut" class="muted">아직 분석 전</div></div>
+    </section>
+
+    <section id="info" class="page hide">
+      <div class="card">
+        <h2>정보 (심평원 연동 준비)</h2>
+        <p class="muted">API 키가 있으면 아래 입력 후 테스트 가능합니다.</p>
+        <div class="row row2">
+          <input id="apiKey" placeholder="HIRA API 일반 인증키 (Encoding)">
+          <button id="saveApi">API 키 저장</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>병·의원 조회</h3>
+        <div class="row row2">
+          <input id="hospQ" placeholder="병원명">
+          <button id="searchHosp">조회</button>
+        </div>
+        <div id="hospOut" class="muted">조회 전</div>
+      </div>
+      <div class="card">
+        <h3>품목/회사 조회</h3>
+        <div class="row row2">
+          <input id="drugQ" placeholder="품목명 또는 성분명">
+          <button id="searchDrug">조회</button>
+        </div>
+        <div id="drugOut" class="muted">조회 전</div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="tabs">
+    <div class="tab active" data-tab="home">홈</div>
+    <div class="tab" data-tab="tasks">할일</div>
+    <div class="tab" data-tab="accounts">거래처</div>
+    <div class="tab" data-tab="results">실적</div>
+    <div class="tab" data-tab="info">정보</div>
+  </nav>
+
+  <script>
+    "use strict";
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+    const state = {
+      todos: JSON.parse(localStorage.getItem("pp_todos") || "[]"),
+      goals: JSON.parse(localStorage.getItem("pp_goals") || '{"day":"","week":"","month":""}'),
+      accounts: JSON.parse(localStorage.getItem("pp_accounts") || "[]")
+    };
+
+    function saveAll(){
+      localStorage.setItem("pp_todos", JSON.stringify(state.todos));
+      localStorage.setItem("pp_goals", JSON.stringify(state.goals));
+      localStorage.setItem("pp_accounts", JSON.stringify(state.accounts));
+    }
+
+    function setPage(id){
+      document.querySelectorAll(".page").forEach(p=>p.classList.add("hide"));
+      $(id).classList.remove("hide");
+      document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===id));
+    }
+
+    function roleOptions(type){
+      if(type==="병원"){
+        return ["교수","부교수","조교수","전임의","레지던트","과장(행정)","간호팀장","약제팀"];
+      }
+      if(type==="의원"){
+        return ["원장","부원장","진료원장","상담실장","행정담당"];
+      }
+      if(type==="약국"){
+        return ["약사","약국장","구매담당"];
+      }
+      return ["대표","영업담당","물류담당"];
+    }
+
+    function renderRoleSelect(){
+      const type = $("accType").value;
+      const roleSel = $("accRole");
+      roleSel.innerHTML = '<option value="">직급/역할</option>' + roleOptions(type).map(r=>`<option>${r}</option>`).join("");
+    }
+
+    function renderKpi(){
+      $("kVisit").textContent = String(state.accounts.length);
+      $("kTodo").textContent = String(state.todos.filter(t=>!t.done).length);
+    }
+
+    function renderTodos(){
+      const box = $("todoList");
+      if(state.todos.length===0){ box.innerHTML = '<div class="muted">등록된 할일이 없습니다.</div>'; renderKpi(); return; }
+      box.innerHTML = state.todos.map((t,idx)=>`
+        <div class="item">
+          <div><span class="pill">${t.pri}</span> ${esc(t.text)}</div>
+          <div style="margin-top:8px">
+            <button data-todo-done="${idx}" class="green">${t.done ? "완료취소":"완료"}</button>
+            <button data-todo-del="${idx}" class="secondary">삭제</button>
+          </div>
+        </div>`).join("");
+      renderKpi();
+    }
+
+    function renderGoals(){
+      $("goalDay").value = state.goals.day || "";
+      $("goalWeek").value = state.goals.week || "";
+      $("goalMonth").value = state.goals.month || "";
+    }
+
+    function renderAccounts(){
+      const t = $("fType").value.trim();
+      const q = $("fKeyword").value.trim().toLowerCase();
+      const rows = state.accounts.filter(a=>{
+        const hitType = !t || a.type===t;
+        const hitQ = !q || [a.name,a.area,a.contact,a.role,a.note].join(" ").toLowerCase().includes(q);
+        return hitType && hitQ;
+      });
+      const box = $("accList");
+      if(rows.length===0){ box.innerHTML = '<div class="card muted">검색 결과가 없습니다.</div>'; renderKpi(); return; }
+      box.innerHTML = rows.map((a,i)=>`
+        <div class="item">
+          <div><span class="pill">${esc(a.type)}</span> <b>${esc(a.name)}</b></div>
+          <div class="muted">${esc(a.area)} | ${esc(a.contact)} ${a.role ? "| "+esc(a.role):""}</div>
+          <div class="muted">${esc(a.note)}</div>
+          <div style="margin-top:8px"><button data-acc-del="${i}" class="secondary">삭제</button></div>
+        </div>`).join("");
+      renderKpi();
+    }
+
+    function parseCsv(text){
+      const lines = text.replace(/\r/g,"").split("\n").filter(Boolean);
+      if(lines.length < 2) return null;
+      const cells = lines.map(line => line.split(",").map(s=>s.trim()));
+      const headers = cells[0];
+      const data = cells.slice(1).map(r=>{
+        const o = {};
+        headers.forEach((h,i)=>{ o[h] = r[i] ?? ""; });
+        return o;
+      });
+      return {headers, data};
+    }
+
+    function sumTop(rows, keyField, amtField){
+      const m = new Map();
+      rows.forEach(r=>{
+        const k = r[keyField] || "(미상)";
+        const v = Number(String(r[amtField]||"0").replace(/[^\d.-]/g,"")) || 0;
+        m.set(k, (m.get(k)||0)+v);
+      });
+      return [...m.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+    }
+
+    function runCsv(){
+      const f = $("csvFile").files[0];
+      if(!f){ $("csvOut").textContent = "CSV 파일을 선택하세요."; return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const parsed = parseCsv(String(reader.result||""));
+        if(!parsed){ $("csvOut").textContent = "CSV 형식이 올바르지 않습니다."; return; }
+
+        const map = JSON.parse(localStorage.getItem("pp_map") || "{}");
+        const wh = map.wh || $("mapWh").value.trim();
+        const hos = map.hos || $("mapHos").value.trim();
+        const ph = map.ph || $("mapPh").value.trim();
+        const prod = map.prod || $("mapProd").value.trim();
+        const amt = map.amt || $("mapAmt").value.trim();
+
+        if(!wh || !hos || !ph || !prod || !amt){
+          $("csvOut").textContent = "컬럼 매핑을 먼저 입력/저장하세요.";
+          return;
+        }
+
+        const topWh = sumTop(parsed.data, wh, amt);
+        const topHos = sumTop(parsed.data, hos, amt);
+        const topPh = sumTop(parsed.data, ph, amt);
+        const topProd = sumTop(parsed.data, prod, amt);
+
+        const fmt = n => Number(n).toLocaleString("ko-KR");
+        const sec = (title, arr) => `<b>${title}</b><br>` + arr.map(x=>`${esc(x[0])}: ${fmt(x[1])}원`).join("<br>");
+        $("csvOut").innerHTML = [
+          sec("도매상 TOP5", topWh),
+          sec("병원/의원 TOP5", topHos),
+          sec("약국 TOP5", topPh),
+          sec("품목 TOP5", topProd)
+        ].join("<hr>");
+      };
+      reader.readAsText(f, "utf-8");
+    }
+
+    function saveMap(){
+      const map = {
+        wh:$("mapWh").value.trim(), hos:$("mapHos").value.trim(), ph:$("mapPh").value.trim(),
+        prod:$("mapProd").value.trim(), qty:$("mapQty").value.trim(), amt:$("mapAmt").value.trim()
+      };
+      localStorage.setItem("pp_map", JSON.stringify(map));
+      $("csvOut").textContent = "컬럼 매핑 저장 완료";
+    }
+
+    function loadMap(){
+      const map = JSON.parse(localStorage.getItem("pp_map") || "{}");
+      $("mapWh").value = map.wh || "자료제공처명";
+      $("mapHos").value = map.hos || "거래처코드명";
+      $("mapPh").value = map.ph || "거래처명";
+      $("mapProd").value = map.prod || "품목명";
+      $("mapQty").value = map.qty || "수량";
+      $("mapAmt").value = map.amt || "처방액";
+    }
+
+    async function queryHospital(){
+      const q = $("hospQ").value.trim();
+      if(!q){ $("hospOut").textContent = "병원명을 입력하세요."; return; }
+      const key = localStorage.getItem("pp_api_key") || "";
+      if(!key){ $("hospOut").textContent = "먼저 API 키를 저장하세요."; return; }
+      $("hospOut").textContent = "조회 중...";
+      try{
+        const url = "https://apis.data.go.kr/B551182/hospInfoServicev2/getHospBasisList"
+          + `?serviceKey=${encodeURIComponent(key)}&yadmNm=${encodeURIComponent(q)}&_type=json&numOfRows=5&pageNo=1`;
+        const r = await fetch(url);
+        const j = await r.json();
+        const item = j?.response?.body?.items?.item;
+        const rows = Array.isArray(item) ? item : (item ? [item] : []);
+        if(rows.length===0){ $("hospOut").textContent = "조회 결과 없음"; return; }
+        $("hospOut").innerHTML = rows.map(v=>`${esc(v.yadmNm||"")} | ${esc(v.addr||"")} | ${esc(v.telno||"")}`).join("<br>");
+      }catch(e){
+        $("hospOut").textContent = "조회 실패 (키/호출제한/CORS 확인 필요)";
+      }
+    }
+
+    async function queryDrug(){
+      const q = $("drugQ").value.trim();
+      if(!q){ $("drugOut").textContent = "품목명 또는 성분명을 입력하세요."; return; }
+      const key = localStorage.getItem("pp_api_key") || "";
+      if(!key){ $("drugOut").textContent = "먼저 API 키를 저장하세요."; return; }
+      $("drugOut").textContent = "조회 중...";
+      try{
+        const url = "https://apis.data.go.kr/B551182/durPrdlstInfoService03/getDurPrdlstInfoList03"
+          + `?serviceKey=${encodeURIComponent(key)}&itemName=${encodeURIComponent(q)}&_type=json&numOfRows=5&pageNo=1`;
+        const r = await fetch(url);
+        const j = await r.json();
+        const item = j?.response?.body?.items?.item;
+        const rows = Array.isArray(item) ? item : (item ? [item] : []);
+        if(rows.length===0){ $("drugOut").textContent = "조회 결과 없음"; return; }
+        $("drugOut").innerHTML = rows.map(v=>`${esc(v.itemName||"")} | ${esc(v.entpName||"회사명 없음")}`).join("<br>");
+      }catch(e){
+        $("drugOut").textContent = "조회 실패 (키/호출제한/CORS 확인 필요)";
+      }
+    }
+
+    function initPin(){
+      const layer = $("pinLayer"), title=$("pinTitle"), desc=$("pinDesc"), confirm=$("pinConfirm"), msg=$("pinMsg");
+      const pin = localStorage.getItem("pp_pin");
+      if(pin){
+        title.textContent = "PIN 입력";
+        desc.textContent = "앱 잠금 해제를 위해 PIN을 입력하세요.";
+        confirm.classList.add("hide");
+      }else{
+        title.textContent = "PIN 설정";
+        desc.textContent = "처음 사용입니다. 4자리 PIN을 설정하세요.";
+        confirm.classList.remove("hide");
+      }
+
+      $("pinSubmit").onclick = () => {
+        const p1 = $("pinInput").value.trim();
+        const p2 = $("pinConfirm").value.trim();
+        if(!/^\d{4}$/.test(p1)){ msg.textContent = "PIN은 숫자 4자리입니다."; return; }
+        const current = localStorage.getItem("pp_pin");
+        if(!current){
+          if(p1 !== p2){ msg.textContent = "PIN 확인이 일치하지 않습니다."; return; }
+          localStorage.setItem("pp_pin", p1);
+          layer.classList.add("hide");
+          return;
+        }
+        if(p1 !== current){ msg.textContent = "PIN이 올바르지 않습니다."; return; }
+        layer.classList.add("hide");
+      };
+
+      $("pinReset").onclick = () => {
+        if(!confirm("PIN을 초기화할까요? 저장 데이터는 유지됩니다.")) return;
+        localStorage.removeItem("pp_pin");
+        $("pinInput").value = "";
+        $("pinConfirm").value = "";
+        msg.textContent = "초기화 완료. 새 PIN을 설정하세요.";
+        title.textContent = "PIN 설정";
+        desc.textContent = "새 PIN 4자리를 입력하세요.";
+        confirm.classList.remove("hide");
+      };
+    }
+
+    function bind(){
+      document.querySelectorAll(".tab").forEach(el=>el.addEventListener("click", ()=>setPage(el.dataset.tab)));
+      document.querySelectorAll("[data-go]").forEach(el=>el.addEventListener("click", ()=>setPage(el.dataset.go)));
+
+      $("accType").addEventListener("change", renderRoleSelect);
+      $("addAcc").addEventListener("click", ()=>{
+        const row = {
+          type:$("accType").value, name:$("accName").value.trim(), area:$("accArea").value.trim(),
+          contact:$("accContact").value.trim(), role:$("accRole").value.trim(), note:$("accNote").value.trim()
+        };
+        if(!row.name){ alert("거래처명을 입력하세요."); return; }
+        state.accounts.unshift(row); saveAll(); renderAccounts();
+        $("accName").value=$("accArea").value=$("accContact").value=$("accNote").value="";
+      });
+      $("fType").addEventListener("change", renderAccounts);
+      $("fKeyword").addEventListener("input", renderAccounts);
+
+      $("addTodo").addEventListener("click", ()=>{
+        const text = $("todoText").value.trim();
+        if(!text){ alert("할일을 입력하세요."); return; }
+        state.todos.unshift({text, pri:$("todoPri").value, done:false});
+        $("todoText").value = ""; saveAll(); renderTodos();
+      });
+      $("todoList").addEventListener("click", (e)=>{
+        const doneIdx = e.target.getAttribute("data-todo-done");
+        const delIdx = e.target.getAttribute("data-todo-del");
+        if(doneIdx !== null){ state.todos[Number(doneIdx)].done = !state.todos[Number(doneIdx)].done; saveAll(); renderTodos(); return; }
+        if(delIdx !== null){ state.todos.splice(Number(delIdx),1); saveAll(); renderTodos(); }
+      });
+
+      $("saveGoals").addEventListener("click", ()=>{
+        state.goals.day = $("goalDay").value.trim();
+        state.goals.week = $("goalWeek").value.trim();
+        state.goals.month = $("goalMonth").value.trim();
+        saveAll(); alert("목표 저장 완료");
+      });
+
+      $("accList").addEventListener("click", (e)=>{
+        const idx = e.target.getAttribute("data-acc-del");
+        if(idx===null) return;
+        state.accounts.splice(Number(idx),1); saveAll(); renderAccounts();
+      });
+
+      $("saveMap").addEventListener("click", saveMap);
+      $("runCsv").addEventListener("click", runCsv);
+      $("saveApi").addEventListener("click", ()=>{
+        const v = $("apiKey").value.trim();
+        localStorage.setItem("pp_api_key", v);
+        alert("API 키 저장 완료");
+      });
+      $("searchHosp").addEventListener("click", queryHospital);
+      $("searchDrug").addEventListener("click", queryDrug);
+    }
+
+    function boot(){
+      initPin();
+      bind();
+      renderRoleSelect();
+      renderTodos();
+      renderGoals();
+      renderAccounts();
+      renderKpi();
+      loadMap();
+      $("apiKey").value = localStorage.getItem("pp_api_key") || "";
+    }
+    document.addEventListener("DOMContentLoaded", boot);
+  </script>
+</body>
+</html>
